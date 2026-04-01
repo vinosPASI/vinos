@@ -5,14 +5,14 @@ Proyecto para Programación Avanzada enfocado en la Automatización, Seguridad y
 Este repositorio contiene el código fuente para la plataforma de inteligencia operativa. El sistema está compuesto por múltiples servicios interconectados diseñados para manejar escalabilidad, análisis de datos en tiempo real y flujos de trabajo basados en Inteligencia Artificial.
 
 ## Documentación
-- [Arquitectura del Backend](docs/backend_architecture.md): Detalles profundos sobre la estructuración de la aplicación en dominios (Domain-Driven Design), la integración de comunicaciones con gRPC/Envoy y la infraestructura cloud.
+- [Arquitectura del Backend](docs/backend_architecture.md): Detalles profundos sobre la estructuración de la aplicación en dominios (Domain-Driven Design), la integración de comunicaciones con gRPC/Envoy y la infraestructura en contenedores.
 
 ## Stack Tecnológico Resumido
 El proyecto hace uso de tecnología moderna cloud-native:
 - **Lenguaje:** Go (Golang)
 - **APIs y Comunicación:** Envoy Proxy, gRPC, Protocol Buffers, REST
-- **Bases de Datos:** PostgreSQL (Transaccional), StarRocks (Analítico)
-- **Infraestructura:** Docker, Kubernetes (Oracle OKE), CI/CD con GitHub Actions
+- **Bases de Datos:** PocketBase (Transaccional local), StarRocks (Analítico)
+- **Infraestructura:** Docker, Docker Compose, CI/CD con GitHub Actions (Deploy vía SSH)
 
 ## Reglas de Desarrollo
 
