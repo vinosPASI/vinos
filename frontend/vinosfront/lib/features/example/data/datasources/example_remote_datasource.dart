@@ -1,0 +1,3 @@
+class ExampleRemoteDataSource {
+  // llamadas API
+}

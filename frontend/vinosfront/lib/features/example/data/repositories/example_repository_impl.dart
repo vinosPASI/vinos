@@ -1,0 +1,3 @@
+class ExampleRepositoryImpl {
+  // implementación real
+}
