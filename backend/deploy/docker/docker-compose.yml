@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  pocketbase:
+    build:
+      context: ../../build/package
+      dockerfile: Dockerfile.pocketbase
+    container_name: smartwinery_pocketbase
+    ports:
+      - "8090:8090"
+    volumes:
+      - pb_data:/pb/pb_data
+    restart: unless-stopped
+
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: smartwinery_minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: admin_winery
+      MINIO_ROOT_PASSWORD: SmartPassword123!
+    ports:
+      - "9000:9000"   # Puerto de la API
+      - "9001:9001"   # Puerto de la Consola Web
+    volumes:
+      - minio_data:/data
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
+    container_name: smartwinery_elastic
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+
+  envoy:
+    image: envoyproxy/envoy:v1.27-latest
+    container_name: smartwinery_envoy
+    ports:
+      - "8080:8080"
+      - "9901:9901"
+    volumes:
+      - ../../build/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
+    depends_on:
+      - pocketbase
+    restart: unless-stopped
+
+volumes:
+  pb_data:
+  minio_data:
+  es_data:
