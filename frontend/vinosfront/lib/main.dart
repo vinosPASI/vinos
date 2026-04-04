@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'features/example/example_screen.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
@@ -11,9 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Scaffold(
-        body: Center(child: Text('App Base')),
-      ),
+      debugShowCheckedModeBanner: false,
+      home: ExampleScreen(), // 👈 AQUÍ mostramos tu pantalla de prueba
     );
   }
 }
