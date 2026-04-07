@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package stuko.api.v1.production;
+
+option go_package = "github.com/stuko/backend/api/proto/v1/production;production";
+
+// Maneja el proceso de embotellado, cruce de inventario de vino a granel e insumos secos y alertas de IA
+service ProductionService {
+  rpc CreateBottlingOrder(CreateBottlingOrderRequest) returns (CreateBottlingOrderResponse);
+}
+
+message CreateBottlingOrderRequest {
+  string wine_id = 1;
+  int32 target_quantity = 2;
+  string unit_type = 3;
+  int64 planned_date = 4; 
+}
+
+message CreateBottlingOrderResponse {
+  string status = 1;
+  repeated MaterialDeduction material_breakdown = 2;
+  PredictiveStockAlert stock_alert = 3;
+}
+
+message MaterialDeduction {
+  string material_id = 1;
+  string material_name = 2;
+  float quantity_to_deduct = 3;
+}
+
+message PredictiveStockAlert {
+  float stockout_probability = 1;
+  string diagnostic_message = 2;
+}
