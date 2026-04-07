@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package stuko.api.v1.vision;
+
+option go_package = "github.com/stuko/backend/api/proto/v1/vision;vision";
+
+// Analiza una etiqueta de vino para extraer su información
+
+service VisionService {
+  rpc AnalyzeWineLabel(AnalyzeWineLabelRequest) returns (AnalyzeWineLabelResponse);
+}
+
+message AnalyzeWineLabelRequest {
+  string image_reference = 1;
+}
+
+message AnalyzeWineLabelResponse {
+  string raw_ocr_text = 1;
+  ImageClassification classification = 2;
+  StructuredWineData wine_data = 3;
+}
+
+message ImageClassification {
+  string label = 1;
+  float confidence_level = 2;
+}
+
+message StructuredWineData {
+  string brand = 1;
+  string cepa_variedad = 2;
+  int32 vintage_year = 3;
+  string volume_content = 4;
+}

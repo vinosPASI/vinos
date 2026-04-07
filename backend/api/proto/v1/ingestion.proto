@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package stuko.api.v1.ingestion;
+
+option go_package = "github.com/stuko/backend/api/proto/v1/ingestion;ingestion";
+
+// Servicio que dispara el pipeline de ingesta y procesamiento de datos etl 
+
+service IngestionService {
+  rpc TriggerDataImport(TriggerDataImportRequest) returns (TriggerDataImportResponse);
+}
+
+message TriggerDataImportRequest {
+  string file_reference = 1;
+  string entity_type = 2;
+}
+
+message TriggerDataImportResponse {
+  bool success = 1;
+  int32 inserted_rows = 2;
+  repeated ImportError errors = 3;
+}
+
+message ImportError {
+  int32 row_number = 1;
+  string error_message = 2;
+}  
