@@ -1,0 +1,9 @@
+docs/project_status_report.md
+.venv/
+.metaflow/
+data/interim/
+data/raw/
+
+# Python temporary files
+__pycache__/
+*.pyc
