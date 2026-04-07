@@ -8,6 +8,11 @@ option go_package = "github.com/stuko/backend/api/proto/v1/identity;identity";
 service IdentityService {
   rpc Login(LoginRequest) returns (LoginResponse);
 }
+enum Role {
+  ROLE_UNSPECIFIED = 0;
+  ROLE_ADMIN = 1;
+  ROLE_OPERATOR = 2;
+}
 
 message LoginRequest {
   string email = 1;
@@ -17,5 +22,5 @@ message LoginRequest {
 message LoginResponse {
   string access_token = 1; // PocketBase
   string user_id = 2;
-  string role = 2;         // Admin y  Operator
+  string role = 3;         // Admin y  Operator y nada
 }
