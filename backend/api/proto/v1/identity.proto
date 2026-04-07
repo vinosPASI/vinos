@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package stuko.api.v1.identity;
+
+option go_package = "github.com/stuko/backend/api/proto/v1/identity;identity";
+
+// Gestiona el acceso y autenticación de usuarios actuando como intermediario con Pocket
+service IdentityService {
+  rpc Login(LoginRequest) returns (LoginResponse);
+}
+
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginResponse {
+  string access_token = 1; // PocketBase
+  string user_id = 2;
+  string role = ;         // Admin y  Operator
+}
