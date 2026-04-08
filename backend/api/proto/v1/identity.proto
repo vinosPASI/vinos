@@ -22,5 +22,5 @@ message LoginRequest {
 message LoginResponse {
   string access_token = 1; // PocketBase
   string user_id = 2;
-  string role = 3;         // Admin y  Operator y nada
+  Role role = 3;         // Admin y  Operator y nada
 }
