@@ -1,0 +1,11 @@
+FROM envoyproxy/envoy:v1.27-latest
+
+# Copiar configuración de Envoy
+COPY envoy.yaml /etc/envoy/envoy.yaml
+
+# El archivo api_descriptor.pb se monta via docker-compose volume
+# para permitir actualizaciones sin rebuild de imagen.
+
+EXPOSE 8080 9901
+
+CMD ["envoy", "-c", "/etc/envoy/envoy.yaml"]
