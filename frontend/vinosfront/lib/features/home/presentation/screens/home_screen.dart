@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vinosfront/core/theme/app_theme.dart';
-import 'package:vinosfront/core/utils/screens_dimensions.dart';
+import 'package:vinosfront/core/utils/screens_dimension.dart';
 import 'package:vinosfront/features/home/data/home_mock_data.dart';
 import 'package:vinosfront/features/home/domain/activity_model.dart';
 import 'package:vinosfront/features/home/domain/dashboard_card_model.dart';

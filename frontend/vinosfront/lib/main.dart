@@ -1,27 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; //Esta desde ahora para futura configuracion :)
+import 'package:flutter/services.dart';
 import 'router/app_router.dart';
+import 'core/theme/app_theme.dart';
 
 void main() {
-  // Envolvemos en ProviderScope porque es requisito de Riverpod
-  runApp(const ProviderScope(child: MyApp()));
+  WidgetsFlutterBinding.ensureInitialized();
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    ),
+  );
+
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  runApp(const VinotecaApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class VinotecaApp extends StatelessWidget {
+  const VinotecaApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    //Usamos .router para habilitar GoRouter
     return MaterialApp.router(
-      title: 'Vinoteca App',
+      title: 'Vinoteca ML',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.deepPurple,
-      ),
-      // Conectamos nuestra configuración de rutas
       routerConfig: appRouter,
+      theme: _buildTheme(),
+    );
+  }
+
+  ThemeData _buildTheme() {
+    return ThemeData(
+      useMaterial3: true,
+      scaffoldBackgroundColor: VinotecaColors.cremaClaro,
+
+      colorScheme: ColorScheme.light(
+        primary: VinotecaColors.vinoPastel,
+        onPrimary: Colors.white,
+        secondary: VinotecaColors.doradoPastel,
+        onSecondary: VinotecaColors.vinoOscuro,
+        surface: VinotecaColors.amarilloVainilla,
+        onSurface: VinotecaColors.vinoOscuro,
+      ),
+
+      textTheme: TextTheme(
+        titleLarge: TextStyle(
+          color: VinotecaColors.vinoOscuro,
+          fontWeight: FontWeight.bold,
+        ),
+        bodyMedium: TextStyle(
+          color: VinotecaColors.vinoOscuro,
+        ),
+        bodySmall: const TextStyle(
+          color: Colors.black54,
+        ),
+      ),
+
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: VinotecaColors.vinoPastel,
+          foregroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      ),
+
+      appBarTheme: AppBarTheme(
+        backgroundColor: VinotecaColors.vinoPastel,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+      ),
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vinosfront/lib/core/theme/app_theme.dart';
-import 'package:vinosfront/lib/core/utils/screen_dimensions.dart';
+import 'package:vinosfront/core/theme/app_theme.dart';
+import 'package:vinosfront/core/utils/screens_dimension.dart';
 
 class MainNavigation extends StatelessWidget {
   final Widget child;
@@ -99,7 +99,6 @@ class _BottomNav extends StatelessWidget {
   }
 }
 
-
 class _NavButton extends StatelessWidget {
   final _NavItem item;
   final bool isSelected;
@@ -121,7 +120,6 @@ class _NavButton extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          
           AnimatedContainer(
             duration: const Duration(milliseconds: 200),
             padding: EdgeInsets.symmetric(
@@ -145,7 +143,6 @@ class _NavButton extends StatelessWidget {
 
           SizedBox(height: s.hp(0.4)),
 
-         
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             style: TextStyle(
@@ -163,7 +160,6 @@ class _NavButton extends StatelessWidget {
     );
   }
 }
-
 
 class _NavItem {
   final IconData icon;
