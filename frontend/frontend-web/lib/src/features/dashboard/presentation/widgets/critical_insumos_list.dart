@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../../shared/theme/app_colors.dart';
 
 class CriticalInsumosList extends StatelessWidget {
   final List<Map<String, dynamic>> items;
@@ -10,48 +11,47 @@ class CriticalInsumosList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.symmetric(vertical: 16),
-          child: Text(
-            "Alerta de Insumos Críticos (ML Score)",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+        const Text(
+          "Insumos Críticos",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal),
         ),
-        ListView.builder(
+        const SizedBox(height: 20),
+        ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: items.length,
+          separatorBuilder: (context, index) => const SizedBox(height: 12),
           itemBuilder: (context, index) {
             final item = items[index];
-            final score = (item['score'] as double) * 100;
-            
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: Card(
-                color: const Color(0xFF252525), // Slightly lighter charcoal
-                child: ListTile(
-                  leading: const Icon(Icons.warning_amber_rounded, color: Colors.orange),
-                  title: Text(item['name'], style: const TextStyle(color: Colors.white)),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Stock Neto: ${item['net_stock']}", 
-                        style: TextStyle(color: Colors.white.withOpacity(0.5))),
-                      const SizedBox(height: 4),
-                      LinearProgressIndicator(
-                        value: item['score'],
-                        backgroundColor: Colors.white10,
-                        color: score > 80 ? const Color(0xFF800020) : Colors.amber,
-                      ),
-                    ],
+            return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.cremaClaro,
+                borderRadius: BorderRadius.circular(12),
+                side: const BorderSide(color: AppColors.doradoPastel, width: 0.5), // CORREGIDO AQUÍ
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    width: 8,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: item['score'] > 0.8 ? Colors.redAccent : AppColors.vinoPastel,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
-                  trailing: Text("${score.toInt()}%", 
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item['name'], style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textoPrincipal)),
+                        Text("Stock: ${item['net_stock']} unidades", style: const TextStyle(fontSize: 12, color: AppColors.textoSecundario)),
+                      ],
+                    ),
+                  ),
+                  const Icon(Icons.warning_amber_rounded, color: AppColors.vinoPastel, size: 20),
+                ],
               ),
             );
           },

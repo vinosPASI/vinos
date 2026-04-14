@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../features/example/presentation/screens/camera_screen.dart';
 
 // Definimos el router como una constante global por ahora. 
 final appRouter = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/camera',
   // Muestra logs de navegación en la consola.
   debugLogDiagnostics: true, 
   
@@ -12,11 +13,28 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/',
       name: 'home',
-      builder: (context, state) => const Scaffold(
+      builder: (context, state) => Scaffold(
         body: Center(
-          child: Text('Vinoteca - Home gRPC Ready'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Vinoteca - Home gRPC Ready'),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => context.push('/camera'),
+                child: const Text('PROBAR CÁMARA [VM-51]'),
+              ),
+            ],
+          ),
         ),
       ),
+    ),
+    
+    // Ruta de la Cámara VM-51
+    GoRoute(
+      path: '/camera',
+      name: 'camera',
+      builder: (context, state) => const CameraScreen(),
     ),
     
     // Aquí irán las rutas de las features (login, dashboard, etc.)

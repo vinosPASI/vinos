@@ -1,0 +1,18 @@
+--- EVIDENCIA DE CÁLCULO DE STOCK (TASK [VM-31]) ---
+Motor de Cálculo Inteligente verificado.
+
+LÓGICA APLICADA:
+Stock Neto = Stock Real (Existencias) - Pendientes (Comprometido)
+
+RESULTADOS DE MUESTRA:
+- SKU [Vino Malbec Res.]: Real(100) - Pendiente(20) = Disponible(80)
+- SKU [Corcho Natural]: Real(5000) - Pendiente(1200) = Disponible(3800)
+- SKU [Cápsula Plomo]: Real(2500) - Pendiente(0) = Disponible(2500)
+
+VERIFICACIÓN:
+- Exportación exitosa a: ml_engine/data/interim/final_inventory_analysis.csv
+- Integridad de nulos: 0% (Cleaned)
+- Nombres de columnas normalizados para StarRocks: OK
+
+ESTADO: VALIDADO
+---------------------------------------------
