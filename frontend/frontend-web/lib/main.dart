@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'src/shared/theme/app_colors.dart';
 import 'src/features/dashboard/presentation/screens/dashboard_screen.dart';
 
 void main() {
-  runApp(const VinotecaIntelligenceApp());
+  runApp(const ProviderScope(child: VinotecaIntelligenceApp()));
 }
 
 class VinotecaIntelligenceApp extends StatelessWidget {
@@ -14,12 +16,12 @@ class VinotecaIntelligenceApp extends StatelessWidget {
       title: 'Vinoteca Intelligence',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.dark,
-        primaryColor: const Color(0xFF800020),
-        scaffoldBackgroundColor: const Color(0xFF131313),
+        brightness: Brightness.light,
+        primaryColor: AppColors.vinoPastel,
+        scaffoldBackgroundColor: AppColors.cremaClaro,
         textTheme: const TextTheme(
-          displayLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          bodyMedium: TextStyle(color: Colors.white70),
+          displayLarge: TextStyle(color: AppColors.textoPrincipal, fontWeight: FontWeight.bold),
+          bodyMedium: TextStyle(color: AppColors.textoPrincipal),
         ),
       ),
       home: const DashboardScreen(),

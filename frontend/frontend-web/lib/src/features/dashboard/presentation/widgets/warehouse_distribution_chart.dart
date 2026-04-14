@@ -1,5 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import '../../../../shared/theme/app_colors.dart';
 
 class WarehouseDistributionChart extends StatelessWidget {
   final Map<String, double> data;
@@ -8,61 +9,48 @@ class WarehouseDistributionChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Colores de respaldo en caso de que el compilador no detecte la paleta global temporalmente
+    final fallbackPalette = [
+      AppColors.vinoPastel,
+      AppColors.vinoOscuro,
+      AppColors.doradoPastel,
+      const Color(0xFFBC8F8F),
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Padding(
-          padding: EdgeInsets.only(bottom: 24),
-          child: Text(
-            "Distribución de Existencias por Bodega",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
+        const Text(
+          "Distribución por Almacén",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal),
         ),
+        const SizedBox(height: 32),
         SizedBox(
-          height: 250,
+          height: 200,
           child: PieChart(
             PieChartData(
-              centerSpaceRadius: 100, // Modern hollow design
-              sectionsSpace: 4,
-              sections: data.keys.toList().asMap().entries.map((entry) {
-                final colors = [
-                  const Color(0xFF800020), // Burgundy
-                  Colors.amber,
-                  Colors.blueGrey,
-                  Colors.teal,
-                ];
-                
+              sections: data.entries.map((entry) {
+                final index = data.keys.toList().indexOf(entry.key);
                 return PieChartSectionData(
-                  color: colors[entry.key % colors.length],
-                  value: data[entry.value],
-                  title: "${data[entry.value]!.toInt()}%",
-                  radius: 20,
-                  titleStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  value: entry.value,
+                  title: '${entry.value.toInt()}%',
+                  radius: 50,
+                  color: fallbackPalette[index % fallbackPalette.length],
+                  titleStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
                 );
               }).toList(),
+              sectionsSpace: 4,
+              centerSpaceRadius: 40,
             ),
           ),
         ),
-        const SizedBox(height: 16),
-        // Simple Legend
+        const SizedBox(height: 24),
+        // Leyenda
         Wrap(
           spacing: 16,
-          children: data.keys.toList().asMap().entries.map((entry) {
-            final colors = [
-              const Color(0xFF800020),
-              Colors.amber,
-              Colors.blueGrey,
-              Colors.teal,
-            ];
-            
+          runSpacing: 8,
+          children: data.keys.map((key) {
+            final index = data.keys.toList().indexOf(key);
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -70,15 +58,12 @@ class WarehouseDistributionChart extends StatelessWidget {
                   width: 12,
                   height: 12,
                   decoration: BoxDecoration(
-                    color: colors[entry.key % colors.length],
+                    color: fallbackPalette[index % fallbackPalette.length],
                     shape: BoxShape.circle,
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(
-                  entry.value,
-                  style: const TextStyle(color: Colors.white70, fontSize: 12),
-                ),
+                Text(key, style: const TextStyle(fontSize: 12, color: AppColors.textoSecundario)),
               ],
             );
           }).toList(),

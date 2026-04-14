@@ -1,106 +1,168 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../shared/theme/app_colors.dart';
 import '../widgets/summary_card.dart';
-import '../widgets/critical_insumos_list.dart';
-import '../widgets/warehouse_distribution_chart.dart';
+import '../widgets/market_exposure_chart.dart';
+import '../widgets/forecasting_feed.dart';
+import '../widgets/high_value_holdings_table.dart';
+import '../providers/dashboard_providers.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Simulando los KPIs calculados por el motor de inferencia (VM-30/31)
-    final criticalItems = [
-      {'name': 'Botella Bordelesa 750ml', 'net_stock': 120, 'score': 0.85},
-      {'name': 'Corcho Natural Extra', 'net_stock': 540, 'score': 0.72},
-      {'name': 'Etiqueta Malbec Reserva', 'net_stock': 210, 'score': 0.92},
-      {'name': 'Cápsula Plomo Roja', 'net_stock': 450, 'score': 0.65},
-    ];
-
-    final warehouseDistribution = {
-      'Depósito Central': 45.0,
-      'Bodega Norte': 30.0,
-      'Depósito Frío': 15.0,
-      'Exportación': 10.0,
-    };
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Escuchamos los proveedores asíncronos
+    final statsAsync = ref.watch(asyncDashboardStatsProvider);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF131313), // Total Black Surface
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: 40),
-              child: Text(
-                "Wine Intelligence Dashboard",
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            ),
-            
-            // Sección de KPIs Superiores (SummaryCards)
-            const Wrap(
-              spacing: 24,
-              runSpacing: 24,
+      backgroundColor: AppColors.cremaClaro,
+      body: Row(
+        children: [
+          _buildSidebar(),
+          Expanded(
+            child: Column(
               children: [
-                SizedBox(
-                  width: 300,
-                  child: SummaryCard(
-                    title: "Stock Neto Total",
-                    value: "24,850",
-                    icon: Icons.inventory_2_rounded,
-                    trend: "+12.5%",
-                  ),
-                ),
-                SizedBox(
-                  width: 300,
-                  child: SummaryCard(
-                    title: "Alertas de Quiebre",
-                    value: "14",
-                    icon: Icons.notifications_active_rounded,
-                    trend: "-2.1%",
-                  ),
-                ),
-                SizedBox(
-                  width: 300,
-                  child: SummaryCard(
-                    title: "Días para Reabastecimiento",
-                    value: "12",
-                    icon: Icons.timer_rounded,
+                _buildHeader(),
+                Expanded(
+                  child: statsAsync.when(
+                    loading: () => const Center(child: CircularProgressIndicator(color: AppColors.vinoPastel)),
+                    error: (err, stack) => Center(child: Text("Error al cargar datos: $err")),
+                    data: (stats) => SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 7,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildKPIRow(stats),
+                                const SizedBox(height: 32),
+                                const MarketExposureChart(),
+                                const SizedBox(height: 32),
+                                const HighValueHoldingsTable(),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 32),
+                          const Expanded(
+                            flex: 3,
+                            child: ForecastingFeed(),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-
-            const SizedBox(height: 56),
-
-            // Sección de Detalle: Gráfico vs Lista Crítica
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Columna de Gráfico de Almacén
-                Expanded(
-                  flex: 1,
-                  child: WarehouseDistributionChart(data: warehouseDistribution),
-                ),
-                
-                const SizedBox(width: 60),
-
-                // Columna de Lista Crítica
-                Expanded(
-                  flex: 1,
-                  child: CriticalInsumosList(items: criticalItems),
-                ),
-              ],
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+
+  Widget _buildSidebar() {
+    return Container(
+      width: 260,
+      color: AppColors.vinoOscuro,
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Vinoteca Intelligence", 
+            style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+          const Text("SOMMELIER ELITE PREMIUM", 
+            style: TextStyle(color: AppColors.doradoPastel, fontSize: 10, letterSpacing: 1.2)),
+          const SizedBox(height: 48),
+          _sidebarItem(Icons.grid_view_rounded, "PANEL DE CONTROL", active: true),
+          _sidebarItem(Icons.inventory_2_outlined, "INVENTARIO"),
+          _sidebarItem(Icons.analytics_outlined, "ANALÍTICA"),
+          _sidebarItem(Icons.trending_up_rounded, "PREDICCIONES"),
+          _sidebarItem(Icons.settings_outlined, "AJUSTES"),
+          const Spacer(),
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.vinoPastel,
+              minimumSize: const Size(double.infinity, 50),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            child: const Text("AÑADIR COSECHA", style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+          ),
+          const SizedBox(height: 24),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const CircleAvatar(backgroundColor: AppColors.doradoPastel, child: Text("A", style: TextStyle(color: AppColors.vinoOscuro, fontWeight: FontWeight.bold))),
+            title: const Text("Angel", style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+            subtitle: const Text("ADMINISTRADOR", style: TextStyle(color: Colors.white38, fontSize: 10)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _sidebarItem(IconData icon, String title, {bool active = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Row(
+        children: [
+          Icon(icon, color: active ? AppColors.doradoPastel : Colors.white38, size: 20),
+          const SizedBox(width: 16),
+          Text(title, style: TextStyle(
+            color: active ? Colors.white : Colors.white38, 
+            fontSize: 13, 
+            fontWeight: active ? FontWeight.bold : FontWeight.normal,
+            letterSpacing: 1.0
+          )),
+          if (active) ...[
+            const Spacer(),
+            Container(width: 2, height: 20, color: AppColors.doradoPastel),
+          ]
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
+      decoration: const BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.black12, width: 0.5)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: const [
+          Text("Inteligencia de Cava", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal)),
+          Icon(Icons.search, color: AppColors.textoSecundario),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildKPIRow(dynamic stats) {
+    return Row(
+      children: [
+        Expanded(
+          child: SummaryCard(
+            title: "STOCK NETO TOTAL",
+            value: "${stats.totalNetStock.toInt()} BTL",
+            icon: Icons.inventory_2_rounded,
+            trend: stats.stockTrend,
+          ),
+        ),
+        const SizedBox(width: 24),
+        Expanded(
+          child: SummaryCard(
+            title: "ALERTAS URGENTES",
+            value: stats.urgentAlerts.toString(),
+            icon: Icons.warning_rounded,
+            trend: stats.alertsTrend,
+          ),
+        ),
+      ],
     );
   }
 }
