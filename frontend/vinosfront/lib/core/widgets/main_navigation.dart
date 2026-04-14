@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:vinoteca/core/theme/vinoteca_colors.dart';
-import 'package:vinoteca/core/utils/screen_dimensions.dart';
+import 'package:vinosfront/lib/core/theme/app_theme.dart';
+import 'package:vinosfront/lib/core/utils/screen_dimensions.dart';
 
 class MainNavigation extends StatelessWidget {
   final Widget child;
