@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package stuko.api.v1.ingestion;
 
-option go_package = "github.com/stuko/backend/api/proto/v1/ingestion;ingestion";
+option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/ingestionpb;ingestionpb";
 
 // Servicio que dispara el pipeline de ingesta y procesamiento de datos etl 
 
