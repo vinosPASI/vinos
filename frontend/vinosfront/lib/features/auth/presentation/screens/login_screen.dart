@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -31,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (emailController.text == defaultEmail &&
         passwordController.text == defaultPassword) {
+      
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: const Row(
@@ -46,6 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
           margin: const EdgeInsets.all(16),
         ),
       );
+
+      context.go('/home');
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
