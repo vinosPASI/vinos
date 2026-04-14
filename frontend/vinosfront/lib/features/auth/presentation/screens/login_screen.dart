@@ -49,7 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       );
 
-      // 🔥 AQUÍ ESTÁ LA CORRECCIÓN
       context.go('/home');
 
     } else {
