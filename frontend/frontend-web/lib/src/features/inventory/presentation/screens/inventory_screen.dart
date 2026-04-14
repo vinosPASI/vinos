@@ -12,7 +12,6 @@ class InventoryScreen extends StatefulWidget {
 class _InventoryScreenState extends State<InventoryScreen> {
   final TextEditingController _searchController = TextEditingController();
   
-  // Mock Data (Simulando lo que vendrá del gRPC/DB)
   final List<InventoryItem> _allInsumos = [
     InventoryItem(id: "1", name: "Malbec Gran Reserva 2021", sku: "W-MAL-01", realStock: 1200, netStock: 300, warehouse: "Central"),
     InventoryItem(id: "2", name: "Botella Bordelesa Vacía", sku: "B-BOR-75", realStock: 5000, netStock: 4800, warehouse: "Insumos"),
@@ -29,7 +28,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
     _filteredInsumos = _allInsumos;
   }
 
-  // Lógica de Fuzzy Matching
   void _performFuzzySearch(String query) {
     if (query.isEmpty) {
       setState(() => _filteredInsumos = _allInsumos);
@@ -43,7 +41,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
           WeightedKey(name: 'name', getter: (i) => i.name, weight: 1.0),
           WeightedKey(name: 'sku', getter: (i) => i.sku, weight: 0.5),
         ],
-        threshold: 0.3, // Tolerancia a errores ortográficos
+        threshold: 0.3,
       ),
     );
 
@@ -74,7 +72,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
         padding: const EdgeInsets.all(24.0),
         child: Column(
           children: [
-            // Barra de búsqueda con ícono de IA
             TextField(
               controller: _searchController,
               onChanged: _performFuzzySearch,
@@ -89,8 +86,6 @@ class _InventoryScreenState extends State<InventoryScreen> {
               ),
             ),
             const SizedBox(height: 32),
-
-            // Tabla de Inventario
             Expanded(
               child: Container(
                 decoration: BoxDecoration(

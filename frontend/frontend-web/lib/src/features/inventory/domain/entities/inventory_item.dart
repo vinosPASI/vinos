@@ -17,9 +17,8 @@ class InventoryItem {
     required this.warehouse,
   });
 
-  // Lógica de Semáforo (RAG) automática
   StockStatus get status {
-    if (netStock <= realStock * 0.2) return StockStatus.red; // Poca reserva neta
+    if (netStock <= realStock * 0.2) return StockStatus.red;
     if (netStock <= realStock * 0.5) return StockStatus.amber;
     return StockStatus.green;
   }
