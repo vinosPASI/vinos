@@ -1,6 +1,6 @@
 {
-    "name": "vinoteca_frontend_web",
-    "short_name": "vinoteca_frontend_web",
+    "name": "frontend_web",
+    "short_name": "frontend_web",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
