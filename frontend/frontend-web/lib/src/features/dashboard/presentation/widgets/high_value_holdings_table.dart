@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../shared/providers/navigation_providers.dart';
 import '../../../../shared/theme/app_colors.dart';
 import '../providers/dashboard_providers.dart';
 
@@ -49,7 +50,7 @@ class HighValueHoldingsTable extends ConsumerWidget {
               },
               children: [
                 _buildHeaderRow(),
-                ...holdings.map((item) => _buildDataRow(item.name, item.region, "\$${item.value.toInt()}", item.trend)).toList(),
+                ...holdings.map((item) => _buildDataRow(ref, item.name, item.region, "\$${item.value.toInt()}", item.trend)).toList(),
               ],
             ),
           ),
@@ -69,10 +70,19 @@ class HighValueHoldingsTable extends ConsumerWidget {
     );
   }
 
-  TableRow _buildDataRow(String name, String region, String value, String trend) {
+  TableRow _buildDataRow(WidgetRef ref, String name, String region, String value, String trend) {
     return TableRow(
       children: [
-        Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal))),
+        TableCell(
+          verticalAlignment: TableCellVerticalAlignment.middle,
+          child: InkWell(
+            onTap: () => ref.read(navigationProvider.notifier).state = 'detail',
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16), 
+              child: Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.vinoPastel, decoration: TextDecoration.underline))
+            ),
+          ),
+        ),
         Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(region, style: const TextStyle(fontSize: 13, color: AppColors.textoSecundario))),
         Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal))),
         Padding(
