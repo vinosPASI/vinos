@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package stuko.api.v1.identity;
 
-option go_package = "github.com/stuko/backend/api/proto/v1/identity;identity";
+option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/identitypb;identitypb";
 
 // Gestiona el acceso y autenticación de usuarios actuando como intermediario con Pocket
 service IdentityService {

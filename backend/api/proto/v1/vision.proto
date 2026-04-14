@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package stuko.api.v1.vision;
 
-option go_package = "github.com/stuko/backend/api/proto/v1/vision;vision";
+option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/visionpb;visionpb";
 
 // Analiza una etiqueta de vino para extraer su información
 

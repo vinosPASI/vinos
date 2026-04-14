@@ -17,15 +17,92 @@ static_resources:
         typed_config:
           "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
           stat_prefix: ingress_http
+          codec_type: AUTO
           route_config:
             name: local_route
             virtual_hosts:
-            - name: local_service
+            - name: backend_services
               domains: ["*"]
+              cors:
+                allow_origin_string_match:
+                - prefix: "*"
+                allow_methods: "GET, POST, PUT, DELETE, OPTIONS"
+                allow_headers: "authorization, content-type, x-requested-with, grpc-timeout"
+                expose_headers: "grpc-status, grpc-message"
               routes:
-              - match: { prefix: "/" }
-                direct_response: { status: 200, body: { inline_string: "Envoy funcionando correctamente en SmartWinery" } }
+              # ── Rutas HTTP directas (storage upload, no necesitan transcoding) ──
+              - match:
+                  prefix: "/v1/storage/"
+                route:
+                  cluster: backend_http
+                  timeout: 60s
+              # ── Health check ──
+              - match:
+                  prefix: "/healthz"
+                route:
+                  cluster: backend_http
+              # ── Todas las demás rutas pasan por gRPC transcoding ──
+              - match:
+                  prefix: "/"
+                route:
+                  cluster: backend_grpc
+                  timeout: 30s
           http_filters:
+          # ── CORS ──
+          - name: envoy.filters.http.cors
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.Cors
+          # ── gRPC-JSON Transcoder ──
+          - name: envoy.filters.http.grpc_json_transcoder
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_json_transcoder.v3.GrpcJsonTranscoder
+              proto_descriptor: "/etc/envoy/api_descriptor.pb"
+              services:
+              - "stuko.api.v1.identity.IdentityService"
+              - "stuko.api.v1.ingestion.IngestionService"
+              - "stuko.api.v1.vision.VisionService"
+              - "stuko.api.v1.production.ProductionService"
+              auto_mapping: true
+              print_options:
+                add_whitespace: true
+                always_print_primitive_fields: true
+                preserve_proto_field_names: true
+              convert_grpc_status: true
+          # ── Router (obligatorio, siempre al final) ──
           - name: envoy.filters.http.router
             typed_config:
               "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
+  clusters:
+  # ── Backend gRPC (puerto 50051) ──
+  - name: backend_grpc
+    type: STRICT_DNS
+    lb_policy: ROUND_ROBIN
+    typed_extension_protocol_options:
+      envoy.extensions.upstreams.http.v3.HttpProtocolOptions:
+        "@type": type.googleapis.com/envoy.extensions.upstreams.http.v3.HttpProtocolOptions
+        explicit_http_config:
+          http2_protocol_options: {}
+    load_assignment:
+      cluster_name: backend_grpc
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: backend
+                port_value: 50051
+
+  # ── Backend HTTP (puerto 8081, para storage y health) ──
+  - name: backend_http
+    type: STRICT_DNS
+    lb_policy: ROUND_ROBIN
+    load_assignment:
+      cluster_name: backend_http
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: backend
+                port_value: 8081
