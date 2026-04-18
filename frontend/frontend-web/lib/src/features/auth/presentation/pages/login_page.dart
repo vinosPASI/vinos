@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:frontend_web/src/shared/theme/app_colors.dart';
 import 'package:frontend_web/src/features/auth/presentation/providers/auth_provider.dart';
 
@@ -34,18 +35,25 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
-
-    if (authState.error != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Manejar cambios de estado (Navegación y Alertas)
+    ref.listen(authProvider, (previous, next) {
+      // Si ocurrió un error, mostramos el Snackbar
+      if (previous?.isLoading == true && !next.isLoading && next.error != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(authState.error!),
+            content: Text(next.error!),
             backgroundColor: AppColors.wineSecondary,
           ),
         );
-      });
-    }
+      }
+
+      // Si fue exitoso (salió de cargar, no hay error y hay usuario) redireccionamos
+      if (previous?.isLoading == true && !next.isLoading && next.error == null && next.user != null) {
+        context.go('/dashboard');
+      }
+    });
+
+    final authState = ref.watch(authProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
