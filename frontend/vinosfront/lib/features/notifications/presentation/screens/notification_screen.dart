@@ -1,18 +1,22 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:vinosfront/core/theme/app_theme.dart';
 import 'package:vinosfront/core/utils/screens_dimension.dart';
 import 'package:vinosfront/features/notifications/data/notification_mock_data.dart';
 import 'package:vinosfront/features/notifications/domain/notification_model.dart';
 import 'package:vinosfront/features/notifications/presentation/widgets/notification_item.dart';
+import '../providers/ingestion_provider.dart';
 
-class NotificationScreen extends StatefulWidget {
+class NotificationScreen extends ConsumerStatefulWidget {
   const NotificationScreen({super.key});
 
   @override
-  State<NotificationScreen> createState() => _NotificationScreenState();
+  ConsumerState<NotificationScreen> createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> {
+class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   String _filtro = 'todas';
 
   List<NotificationModel> get _notificaciones =>
@@ -27,9 +31,95 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   int get _unreadCount => _notificaciones.where((n) => !n.isRead).length;
 
+  Future<void> _pickCSVAndImport() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['csv'],
+        withData: true, // We need bytes to avoid depending solely on File path across all OS
+      );
+
+      if (result != null && result.files.isNotEmpty) {
+        final platformFile = result.files.first;
+        
+        // Extra validation just in case
+        if (!platformFile.name.toLowerCase().endsWith('.csv')) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Por favor, selecciona un archivo CSV.'),
+                backgroundColor: Color(0xFFB85C6E),
+              ),
+            );
+          }
+          return;
+        }
+
+        final bytes = platformFile.bytes;
+        if (bytes != null) {
+          // Trigger the import with a default entity type for now
+          ref.read(ingestionProvider.notifier).triggerCSVImport(platformFile.name, bytes, 'lote_vendimia');
+        } else {
+          // Fallback if withData fails (shouldn't happen on mobile usually)
+          final file = File(platformFile.path!);
+          final fileBytes = await file.readAsBytes();
+          ref.read(ingestionProvider.notifier).triggerCSVImport(platformFile.name, fileBytes, 'lote_vendimia');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error al seleccionar documento: $e'),
+            backgroundColor: const Color(0xFFB85C6E),
+          ),
+        );
+      }
+    }
+  }
+
+  void _listenIngestionState() {
+    ref.listen<IngestionState>(ingestionProvider, (previous, next) {
+      if (previous?.isLoading == true && next.isLoading == false) {
+        if (next.error != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error de importación: ${next.error}'),
+              backgroundColor: const Color(0xFFB85C6E),
+            ),
+          );
+        } else if (next.response != null) {
+          if (next.response!.success) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Row(
+                  children: [
+                    const Icon(Icons.check_circle, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Text('Datos importados correctamente (${next.response!.insertedRows} filas)'),
+                  ],
+                ),
+                backgroundColor: VinotecaColors.vinoPastel,
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Importación fallida: ${next.response!.errors.join(", ")}'),
+                backgroundColor: const Color(0xFFB85C6E),
+              ),
+            );
+          }
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _listenIngestionState();
     final s = ScreenDimensions.of(context);
+    final ingestionState = ref.watch(ingestionProvider);
 
     return Scaffold(
       backgroundColor: VinotecaColors.cremaClaro,
@@ -39,9 +129,17 @@ class _NotificationScreenState extends State<NotificationScreen> {
           children: [
             _buildHeader(s),
             _buildFilterRow(s),
+            if (ingestionState.isLoading)
+              const LinearProgressIndicator(color: VinotecaColors.vinoPastel),
             Expanded(child: _buildList(s)),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: VinotecaColors.vinoPastel,
+        onPressed: ingestionState.isLoading ? null : _pickCSVAndImport,
+        icon: const Icon(Icons.upload_file, color: Colors.white),
+        label: const Text('Importar CSV', style: TextStyle(color: Colors.white)),
       ),
     );
   }
