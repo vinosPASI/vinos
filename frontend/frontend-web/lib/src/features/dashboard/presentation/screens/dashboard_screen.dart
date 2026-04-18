@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../shared/theme/app_colors.dart';
 import '../widgets/summary_card.dart';
 import '../widgets/market_exposure_chart.dart';
 import '../widgets/forecasting_feed.dart';
 import '../widgets/high_value_holdings_table.dart';
+import '../widgets/add_harvest_modal.dart';
 import '../providers/dashboard_providers.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -12,21 +14,20 @@ class DashboardScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Escuchamos los proveedores asíncronos
     final statsAsync = ref.watch(asyncDashboardStatsProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.cremaClaro,
+      backgroundColor: AppColors.background,
       body: Row(
         children: [
-          _buildSidebar(),
+          _buildSidebar(context),
           Expanded(
             child: Column(
               children: [
                 _buildHeader(),
                 Expanded(
                   child: statsAsync.when(
-                    loading: () => const Center(child: CircularProgressIndicator(color: AppColors.vinoPastel)),
+                    loading: () => const Center(child: CircularProgressIndicator(color: AppColors.winePrimary)),
                     error: (err, stack) => Center(child: Text("Error al cargar datos: $err")),
                     data: (stats) => SingleChildScrollView(
                       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 24),
@@ -64,10 +65,10 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildSidebar() {
+  Widget _buildSidebar(BuildContext context) {
     return Container(
       width: 260,
-      color: AppColors.vinoOscuro,
+      color: AppColors.wineSecondary,
       padding: const EdgeInsets.all(24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,18 +76,25 @@ class DashboardScreen extends ConsumerWidget {
           const Text("Vinoteca Intelligence", 
             style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
           const Text("SOMMELIER ELITE PREMIUM", 
-            style: TextStyle(color: AppColors.doradoPastel, fontSize: 10, letterSpacing: 1.2)),
+            style: TextStyle(color: AppColors.sand, fontSize: 10, letterSpacing: 1.2)),
           const SizedBox(height: 48),
           _sidebarItem(Icons.grid_view_rounded, "PANEL DE CONTROL", active: true),
-          _sidebarItem(Icons.inventory_2_outlined, "INVENTARIO"),
+          _sidebarItem(Icons.inventory_2_outlined, "INVENTARIO", onTap: () {
+            context.go('/inventory');
+          }),
           _sidebarItem(Icons.analytics_outlined, "ANALÍTICA"),
           _sidebarItem(Icons.trending_up_rounded, "PREDICCIONES"),
           _sidebarItem(Icons.settings_outlined, "AJUSTES"),
           const Spacer(),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => const AddHarvestModal(),
+              );
+            },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.vinoPastel,
+              backgroundColor: AppColors.winePrimary,
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
@@ -95,7 +103,7 @@ class DashboardScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           ListTile(
             contentPadding: EdgeInsets.zero,
-            leading: const CircleAvatar(backgroundColor: AppColors.doradoPastel, child: Text("A", style: TextStyle(color: AppColors.vinoOscuro, fontWeight: FontWeight.bold))),
+            leading: const CircleAvatar(backgroundColor: AppColors.sand, child: Text("A", style: TextStyle(color: AppColors.wineSecondary, fontWeight: FontWeight.bold))),
             title: const Text("Angel", style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
             subtitle: const Text("ADMINISTRADOR", style: TextStyle(color: Colors.white38, fontSize: 10)),
           ),
@@ -104,24 +112,27 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _sidebarItem(IconData icon, String title, {bool active = false}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        children: [
-          Icon(icon, color: active ? AppColors.doradoPastel : Colors.white38, size: 20),
-          const SizedBox(width: 16),
-          Text(title, style: TextStyle(
-            color: active ? Colors.white : Colors.white38, 
-            fontSize: 13, 
-            fontWeight: active ? FontWeight.bold : FontWeight.normal,
-            letterSpacing: 1.0
-          )),
-          if (active) ...[
-            const Spacer(),
-            Container(width: 2, height: 20, color: AppColors.doradoPastel),
-          ]
-        ],
+  Widget _sidebarItem(IconData icon, String title, {bool active = false, VoidCallback? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          children: [
+            Icon(icon, color: active ? AppColors.sand : Colors.white38, size: 20),
+            const SizedBox(width: 16),
+            Text(title, style: TextStyle(
+              color: active ? Colors.white : Colors.white38, 
+              fontSize: 13, 
+              fontWeight: active ? FontWeight.bold : FontWeight.normal,
+              letterSpacing: 1.0
+            )),
+            if (active) ...[
+              const Spacer(),
+              Container(width: 2, height: 20, color: AppColors.sand),
+            ]
+          ],
+        ),
       ),
     );
   }
@@ -135,8 +146,8 @@ class DashboardScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: const [
-          Text("Inteligencia de Cava", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal)),
-          Icon(Icons.search, color: AppColors.textoSecundario),
+          Text("Inteligencia de Cava", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.wineSecondary)),
+          Icon(Icons.search, color: Colors.grey),
         ],
       ),
     );

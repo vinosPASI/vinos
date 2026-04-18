@@ -43,3 +43,105 @@ class HoldingItem {
     );
   }
 }
+
+// ========================================
+// Modelos para VisionService (Fase 1)
+// ========================================
+
+class StructuredWineData {
+  final String brand;
+  final String cepaVariedad;
+  final int vintageYear;
+  final String volumeContent;
+
+  StructuredWineData({
+    required this.brand,
+    required this.cepaVariedad,
+    required this.vintageYear,
+    required this.volumeContent,
+  });
+
+  factory StructuredWineData.fromJson(Map<String, dynamic> json) {
+    return StructuredWineData(
+      brand: json['brand'] ?? '',
+      cepaVariedad: json['cepa_variedad'] ?? '',
+      vintageYear: json['vintage_year'] ?? 0,
+      volumeContent: json['volume_content'] ?? '',
+    );
+  }
+}
+
+class WineClassification {
+  final String label;
+  final double confidenceLevel;
+
+  WineClassification({required this.label, required this.confidenceLevel});
+
+  factory WineClassification.fromJson(Map<String, dynamic> json) {
+    return WineClassification(
+      label: json['label'] ?? '',
+      confidenceLevel: (json['confidence_level'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
+}
+
+class AnalyzeWineLabelResponse {
+  final String rawOcrText;
+  final WineClassification classification;
+  final StructuredWineData wineData;
+
+  AnalyzeWineLabelResponse({
+    required this.rawOcrText,
+    required this.classification,
+    required this.wineData,
+  });
+
+  factory AnalyzeWineLabelResponse.fromJson(Map<String, dynamic> json) {
+    return AnalyzeWineLabelResponse(
+      rawOcrText: json['raw_ocr_text'] ?? '',
+      classification: WineClassification.fromJson(json['classification'] ?? {}),
+      wineData: StructuredWineData.fromJson(json['wine_data'] ?? {}),
+    );
+  }
+}
+
+// ========================================
+// Modelos para ProductionService (Fase 2)
+// ========================================
+
+class PredictiveStockAlert {
+  final double stockoutProbability;
+  final String diagnosticMessage;
+
+  PredictiveStockAlert({
+    required this.stockoutProbability,
+    required this.diagnosticMessage,
+  });
+
+  factory PredictiveStockAlert.fromJson(Map<String, dynamic> json) {
+    return PredictiveStockAlert(
+      stockoutProbability: (json['stockout_probability'] as num?)?.toDouble() ?? 0.0,
+      diagnosticMessage: json['diagnostic_message'] ?? '',
+    );
+  }
+}
+
+class CreateBottlingOrderResponse {
+  final String status;
+  final List<dynamic> materialBreakdown;
+  final PredictiveStockAlert stockAlert;
+
+  CreateBottlingOrderResponse({
+    required this.status,
+    required this.materialBreakdown,
+    required this.stockAlert,
+  });
+
+  factory CreateBottlingOrderResponse.fromJson(Map<String, dynamic> json) {
+    return CreateBottlingOrderResponse(
+      status: json['status'] ?? '',
+      materialBreakdown: json['material_breakdown'] ?? [],
+      stockAlert: PredictiveStockAlert.fromJson(json['stock_alert'] ?? {}),
+    );
+  }
+}

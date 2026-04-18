@@ -29,8 +29,8 @@ class HighValueHoldingsTable extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("Activos de Alto Valor", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal)),
-              Text("ÚLTIMA REVALORIZACIÓN: HACE 2H", style: TextStyle(fontSize: 10, color: AppColors.textoSecundario, fontWeight: FontWeight.bold)),
+              const Text("Activos de Alto Valor", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.wineSecondary)),
+              Text("ÚLTIMA REVALORIZACIÓN: HACE 2H", style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 24),
@@ -72,9 +72,9 @@ class HighValueHoldingsTable extends ConsumerWidget {
   TableRow _buildDataRow(String name, String region, String value, String trend) {
     return TableRow(
       children: [
-        Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal))),
-        Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(region, style: const TextStyle(fontSize: 13, color: AppColors.textoSecundario))),
-        Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal))),
+        Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.wineSecondary))),
+        Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(region, style: const TextStyle(fontSize: 13, color: Colors.grey))),
+        Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.wineSecondary))),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16), 
           child: Text(trend, style: TextStyle(
