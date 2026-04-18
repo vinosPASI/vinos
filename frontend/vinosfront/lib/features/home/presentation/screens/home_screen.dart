@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vinosfront/core/theme/app_theme.dart';
 import 'package:vinosfront/core/utils/screens_dimension.dart';
@@ -6,17 +7,43 @@ import 'package:vinosfront/features/home/data/home_mock_data.dart';
 import 'package:vinosfront/features/home/domain/activity_model.dart';
 import 'package:vinosfront/features/home/domain/dashboard_card_model.dart';
 import 'package:vinosfront/router/app_router.dart';
+import '../providers/home_provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final s = ScreenDimensions.of(context);
 
-    // Consume el mock — cuando haya repositorio real, solo cambia esta línea
-    final cards    = HomeMockData.dashboardCards;
+    // Watch the real backend data
+    final stockPredictionAsync = ref.watch(stockPredictionProvider);
+
+    // Consume el mock
+    final cards = List<DashboardCardModel>.from(HomeMockData.dashboardCards);
     final activity = HomeMockData.recentActivity;
+
+    // Si la llamada real funciona, modificamos la tarjeta de Riesgo de Stock (la última)
+    // O mejor aún, la primera o donde aplique. En HomeMockData la de Predicción es la última.
+    stockPredictionAsync.whenData((probability) {
+      // Reemplaza la tarjeta de predicción (asumiendo que es una de las cards, buscamos por su titulo o indice)
+      final probValue = (probability * 100).toStringAsFixed(1);
+      final index = cards.indexWhere((c) => c.title.contains('Predicción') || c.title.contains('Riesgo'));
+      if (index != -1) {
+        cards[index] = DashboardCardModel(
+          title: 'Riesgo de Quiebre',
+          value: '$probValue%',
+          icon: Icons.trending_up,
+        );
+      } else {
+        // En caso que no se llame así en el mock, actualizamos la primera
+        cards[0] = DashboardCardModel(
+          title: 'Riesgo Stockout',
+          value: '$probValue%',
+          icon: Icons.warning_amber_rounded,
+        );
+      }
+    });
 
     return Scaffold(
       backgroundColor: VinotecaColors.cremaClaro,
