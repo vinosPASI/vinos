@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'router/app_router.dart';
 import 'core/theme/app_theme.dart';
 
@@ -18,7 +19,11 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(const VinotecaApp());
+  runApp(
+    const ProviderScope(
+      child: VinotecaApp(),
+    ),
+  );
 }
 
 class VinotecaApp extends StatelessWidget {
