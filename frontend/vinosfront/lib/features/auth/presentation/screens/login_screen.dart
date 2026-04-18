@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'register_screen.dart';
+import '../providers/auth_provider.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final String defaultEmail = "admin@gmail.com";
-  final String defaultPassword = "12345";
-
   bool _obscurePassword = true;
-  bool _isLoading = false;
 
   static const Color vinoOscuro = Color(0xFF6E3B47);
   static const Color vinoPastel = Color(0xFF8C4A5A);
@@ -25,49 +23,22 @@ class _LoginScreenState extends State<LoginScreen> {
   static const Color doradoPastel = Color(0xFFE6D3A3);
   static const Color cremaClaro = Color(0xFFF8F5F0);
 
-  void login() async {
-    setState(() => _isLoading = true);
-    await Future.delayed(const Duration(milliseconds: 600));
-    setState(() => _isLoading = false);
-
-    if (emailController.text == defaultEmail &&
-        passwordController.text == defaultPassword) {
-      
+  void login() {
+    FocusScope.of(context).unfocus();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    
+    if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            children: [
-              Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
-              SizedBox(width: 10),
-              Text("Bienvenido a Vinoteca"),
-            ],
-          ),
-          backgroundColor: vinoPastel,
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: const EdgeInsets.all(16),
+        const SnackBar(
+          content: Text("Por favor rellena ambos campos"),
+          backgroundColor: Color(0xFFB85C6E),
         ),
       );
-
-      context.go('/home');
-
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Row(
-            children: [
-              Icon(Icons.error_outline, color: Colors.white, size: 20),
-              SizedBox(width: 10),
-              Text("Correo o contraseña incorrectos"),
-            ],
-          ),
-          backgroundColor: const Color(0xFFB85C6E),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: const EdgeInsets.all(16),
-        ),
-      );
+      return;
     }
+
+    ref.read(authProvider.notifier).login(email, password);
   }
 
   @override
@@ -77,8 +48,52 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _listenAuthState() {
+    ref.listen<AuthState>(authProvider, (previous, next) {
+      if (previous?.isLoading == true && next.isLoading == false) {
+        if (next.error != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.white, size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(child: Text(next.error!)),
+                ],
+              ),
+              backgroundColor: const Color(0xFFB85C6E),
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+        } else if (next.user != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Row(
+                children: [
+                  Icon(Icons.check_circle_outline, color: Colors.white, size: 20),
+                  SizedBox(width: 10),
+                  Text("Bienvenido a Vinoteca"),
+                ],
+              ),
+              backgroundColor: vinoPastel,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+          context.go('/home');
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    _listenAuthState();
+    final _isLoading = ref.watch(authProvider).isLoading;
+
     return Scaffold(
       backgroundColor: cremaClaro,
       body: SafeArea(
