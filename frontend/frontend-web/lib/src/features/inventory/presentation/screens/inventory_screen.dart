@@ -25,45 +25,6 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     'producto_terminado',
     'movimiento',
   ];
-  
-  final List<InventoryItem> _allInsumos = [
-    InventoryItem(id: "1", name: "Malbec Gran Reserva 2021", sku: "W-MAL-01", realStock: 1200, netStock: 300, warehouse: "Central"),
-    InventoryItem(id: "2", name: "Botella Bordelesa Vacía", sku: "B-BOR-75", realStock: 5000, netStock: 4800, warehouse: "Insumos"),
-    InventoryItem(id: "3", name: "Corcho de Alcornoque Premium", sku: "C-COR-09", realStock: 2000, netStock: 150, warehouse: "Insumos"),
-    InventoryItem(id: "4", name: "Chardonnay Barrel Select", sku: "W-CHA-05", realStock: 800, netStock: 750, warehouse: "Norte"),
-    InventoryItem(id: "5", name: "Etiqueta Diseño Malbec", sku: "E-MAL-21", realStock: 3000, netStock: 1200, warehouse: "Imprenta"),
-  ];
-
-  List<InventoryItem> _filteredInsumos = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _filteredInsumos = _allInsumos;
-  }
-
-  void _performFuzzySearch(String query) {
-    if (query.isEmpty) {
-      setState(() => _filteredInsumos = _allInsumos);
-      return;
-    }
-
-    final fuse = Fuzzy<InventoryItem>(
-      _allInsumos,
-      options: FuzzyOptions(
-        keys: [
-          WeightedKey(name: 'name', getter: (i) => i.name, weight: 1.0),
-          WeightedKey(name: 'sku', getter: (i) => i.sku, weight: 0.5),
-        ],
-        threshold: 0.3,
-      ),
-    );
-
-    final results = fuse.search(query);
-    setState(() {
-      _filteredInsumos = results.map((r) => r.item).toList();
-    });
-  }
 
   Color _getStatusColor(StockStatus status) {
     switch (status) {
@@ -130,6 +91,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     });
 
     final importState = ref.watch(importCSVProvider);
+    final inventoryAsync = ref.watch(inventoryListProvider);
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -153,7 +115,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                         _buildSearchBar(),
                         const SizedBox(height: 24),
                         // Tabla de inventario
-                        _buildInventoryTable(),
+                        _buildInventoryTable(inventoryAsync),
                       ],
                     ),
                   ),
@@ -409,7 +371,7 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
       ),
       child: TextField(
         controller: _searchController,
-        onChanged: _performFuzzySearch,
+        onChanged: (val) => setState(() {}),
         decoration: InputDecoration(
           hintText: "Buscar insumos (Malbec, Corcho, etc... tolerante a errores)",
           hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14),
@@ -426,31 +388,49 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
     );
   }
 
-  Widget _buildInventoryTable() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.02),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
+  Widget _buildInventoryTable(AsyncValue<List<InventoryItem>> inventoryAsync) {
+    return inventoryAsync.when(
+      data: (items) {
+        List<InventoryItem> displayList = items;
+        final query = _searchController.text;
+        if (query.isNotEmpty) {
+          final fuse = Fuzzy<InventoryItem>(
+            items,
+            options: FuzzyOptions(
+              keys: [
+                WeightedKey(name: 'name', getter: (i) => i.name, weight: 1.0),
+                WeightedKey(name: 'sku', getter: (i) => i.sku, weight: 0.5),
+              ],
+              threshold: 0.3,
+            ),
+          );
+          displayList = fuse.search(query).map((r) => r.item).toList();
+        }
+
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.02),
+                blurRadius: 20,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: DataTable(
-          headingRowColor: WidgetStateProperty.all(AppColors.cream.withOpacity(0.5)),
-          columns: const [
-            DataColumn(label: Text("STATUS", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-            DataColumn(label: Text("NOMBRE / SKU", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-            DataColumn(label: Text("STOCK REAL", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-            DataColumn(label: Text("STOCK NETO", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-            DataColumn(label: Text("ALMACÉN", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-          ],
-          rows: _filteredInsumos.map((item) => DataRow(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: DataTable(
+              headingRowColor: WidgetStateProperty.all(AppColors.cream.withOpacity(0.5)),
+              columns: const [
+                DataColumn(label: Text("STATUS", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                DataColumn(label: Text("NOMBRE / SKU", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                DataColumn(label: Text("STOCK REAL", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                DataColumn(label: Text("STOCK NETO", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                DataColumn(label: Text("ALMACÉN", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+              ],
+              rows: displayList.map((item) => DataRow(
             cells: [
               DataCell(
                 Container(
@@ -482,6 +462,18 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
               DataCell(Text(item.warehouse, style: TextStyle(color: Colors.grey[600], fontSize: 13))),
             ],
           )).toList(),
+        ),
+      ),
+    );
+      },
+      loading: () => const Center(child: Padding(
+        padding: EdgeInsets.all(40.0),
+        child: CircularProgressIndicator(color: AppColors.winePrimary),
+      )),
+      error: (err, stack) => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(40.0),
+          child: Text("Error al cargar inventario: $err", style: const TextStyle(color: Colors.red)),
         ),
       ),
     );
