@@ -15,12 +15,16 @@ import (
 	ingestionpb "github.com/vinosPASI/vinos/backend/api/proto/v1/ingestionpb"
 	productionpb "github.com/vinosPASI/vinos/backend/api/proto/v1/productionpb"
 	visionpb "github.com/vinosPASI/vinos/backend/api/proto/v1/visionpb"
+	dashboardpb "github.com/vinosPASI/vinos/backend/api/proto/v1/dashboardpb"
+	inventorypb "github.com/vinosPASI/vinos/backend/api/proto/v1/inventorypb"
 
 	"github.com/vinosPASI/vinos/backend/internal/identity"
 	"github.com/vinosPASI/vinos/backend/internal/ingestion"
 	"github.com/vinosPASI/vinos/backend/internal/production"
 	"github.com/vinosPASI/vinos/backend/internal/storage"
 	"github.com/vinosPASI/vinos/backend/internal/vision"
+	"github.com/vinosPASI/vinos/backend/internal/dashboard"
+	"github.com/vinosPASI/vinos/backend/internal/inventory"
 	"github.com/vinosPASI/vinos/backend/pkg/db"
 	"github.com/vinosPASI/vinos/backend/pkg/interceptors"
 	"github.com/vinosPASI/vinos/backend/pkg/logger"
@@ -81,6 +85,8 @@ func main() {
 	ingestionpb.RegisterIngestionServiceServer(grpcServer, ingestion.NewHandler())
 	visionpb.RegisterVisionServiceServer(grpcServer, vision.NewHandler())
 	productionpb.RegisterProductionServiceServer(grpcServer, production.NewHandler())
+	dashboardpb.RegisterDashboardServiceServer(grpcServer, dashboard.NewHandler(pbClient))
+	inventorypb.RegisterInventoryServiceServer(grpcServer, inventory.NewHandler(pbClient))
 
 	// Reflection para herramientas como grpcurl
 	reflection.Register(grpcServer)

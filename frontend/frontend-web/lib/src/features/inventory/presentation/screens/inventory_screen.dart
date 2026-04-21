@@ -439,50 +439,87 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
           ),
         ],
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: DataTable(
-          headingRowColor: WidgetStateProperty.all(AppColors.cream.withOpacity(0.5)),
-          columns: const [
-            DataColumn(label: Text("STATUS", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-            DataColumn(label: Text("NOMBRE / SKU", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-            DataColumn(label: Text("STOCK REAL", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-            DataColumn(label: Text("STOCK NETO", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-            DataColumn(label: Text("ALMACÉN", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-          ],
-          rows: _filteredInsumos.map((item) => DataRow(
-            cells: [
-              DataCell(
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(item.status).withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(_getStatusLabel(item.status), style: TextStyle(color: _getStatusColor(item.status), fontSize: 11, fontWeight: FontWeight.bold)),
-                ),
+      child: Column(
+        children: [
+          // Header de la tabla (Personalizado para evitar DataTable)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            decoration: BoxDecoration(
+              color: AppColors.cream.withOpacity(0.5),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: Row(
+              children: const [
+                Expanded(flex: 2, child: Text("STATUS", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                Expanded(flex: 4, child: Text("PRODUCTO / SKU", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                Expanded(flex: 1, child: Text("REAL", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                Expanded(flex: 1, child: Text("NETO", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                Expanded(flex: 2, child: Text("ALMACÉN", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                SizedBox(width: 40), // Espacio para el icono de acción
+              ],
+            ),
+          ),
+          // Filas
+          ..._filteredInsumos.map((item) => InkWell(
+            onTap: () {
+              context.pushNamed(
+                'inventory_detail',
+                pathParameters: {
+                  'id': item.id,
+                  'name': item.name,
+                },
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              decoration: const BoxDecoration(
+                border: Border(bottom: BorderSide(color: Colors.black12, width: 0.5)),
               ),
-              DataCell(Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Row(
                 children: [
-                  Text(item.name, style: const TextStyle(color: AppColors.wineSecondary, fontWeight: FontWeight.bold, fontSize: 13)),
-                  Text(item.sku, style: TextStyle(color: Colors.grey[500], fontSize: 11)),
+                  Expanded(
+                    flex: 2,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: _getStatusColor(item.status).withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(_getStatusLabel(item.status), style: TextStyle(color: _getStatusColor(item.status), fontSize: 11, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.name, style: const TextStyle(color: AppColors.wineSecondary, fontWeight: FontWeight.bold, fontSize: 13), overflow: TextOverflow.ellipsis),
+                        Text(item.sku, style: TextStyle(color: Colors.grey[500], fontSize: 11)),
+                      ],
+                    ),
+                  ),
+                  Expanded(flex: 1, child: Text(item.realStock.toString(), style: const TextStyle(color: AppColors.wineSecondary, fontSize: 13))),
+                  Expanded(
+                    flex: 1, 
+                    child: Text(
+                      item.netStock.toString(), 
+                      style: TextStyle(
+                        color: item.netStock < item.realStock * 0.2 ? Colors.redAccent : AppColors.wineSecondary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(flex: 2, child: Text(item.warehouse, style: TextStyle(color: Colors.grey[600], fontSize: 13), overflow: TextOverflow.ellipsis)),
+                  const Icon(Icons.analytics_outlined, color: AppColors.winePrimary, size: 20),
                 ],
-              )),
-              DataCell(Text(item.realStock.toString(), style: const TextStyle(color: AppColors.wineSecondary, fontSize: 13))),
-              DataCell(Text(
-                item.netStock.toString(), 
-                style: TextStyle(
-                  color: item.netStock < item.realStock * 0.2 ? Colors.redAccent : AppColors.wineSecondary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                ),
-              )),
-              DataCell(Text(item.warehouse, style: TextStyle(color: Colors.grey[600], fontSize: 13))),
-            ],
+              ),
+            ),
           )).toList(),
-        ),
+        ],
       ),
     );
   }

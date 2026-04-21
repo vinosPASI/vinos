@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/inventario_models.dart';
 import '../../data/repositories/ingestion_repository_impl.dart';
+import '../../data/repositories/inventory_repository_impl.dart';
 
 // ========================================
 // Estado y Provider para Ingesta CSV
@@ -64,4 +65,10 @@ class ImportCSVNotifier extends StateNotifier<ImportCSVState> {
 final importCSVProvider =
     StateNotifierProvider<ImportCSVNotifier, ImportCSVState>((ref) {
   return ImportCSVNotifier(ref);
+});
+
+// Provider para detalles de un item específico
+final inventoryItemDetailProvider = FutureProvider.family<Map<String, dynamic>, String>((ref, id) async {
+  final repo = ref.watch(inventoryRepositoryProvider);
+  return repo.getInventoryItemDetail(id);
 });

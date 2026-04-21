@@ -62,6 +62,8 @@ static_resources:
               - "stuko.api.v1.ingestion.IngestionService"
               - "stuko.api.v1.vision.VisionService"
               - "stuko.api.v1.production.ProductionService"
+              - "stuko.api.v1.dashboard.DashboardService"
+              - "stuko.api.v1.inventory.InventoryService"
               auto_mapping: true
               print_options:
                 add_whitespace: true
@@ -90,7 +92,7 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: backend
+                address: host.docker.internal
                 port_value: 50051
 
   # ── Backend HTTP (puerto 8081, para storage y health) ──
@@ -104,5 +106,5 @@ static_resources:
         - endpoint:
             address:
               socket_address:
-                address: backend
+                address: host.docker.internal
                 port_value: 8081

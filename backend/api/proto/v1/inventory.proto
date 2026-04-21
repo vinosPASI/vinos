@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package stuko.api.v1.inventory;
+
+option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/inventorypb";
+
+import "google/api/annotations.proto";
+
+service InventoryService {
+  rpc ListItems(ListItemsRequest) returns (ListItemsResponse) {
+    option (google.api.http) = {
+      post: "/stuko.api.v1.inventory.InventoryService/ListItems"
+      body: "*"
+    };
+  }
+  rpc GetItemDetail(GetItemDetailRequest) returns (GetItemDetailResponse) {
+    option (google.api.http) = {
+      post: "/stuko.api.v1.inventory.InventoryService/GetItemDetail"
+      body: "*"
+    };
+  }
+}
+
+message ListItemsRequest {}
+
+message InventoryItem {
+  string id = 1;
+  string name = 2;
+  string sku = 3;
+  int32 real_stock = 4;
+  int32 net_stock = 5;
+  string warehouse = 6;
+}
+
+message ListItemsResponse {
+  repeated InventoryItem items = 1;
+}
+
+message GetItemDetailRequest {
+  string id = 1;
+}
+
+message Movement {
+  string date = 1;
+  string type = 2;
+  string reference = 3;
+  int32 quantity = 4;
+}
+
+message StockPoint {
+  float x = 1;
+  float y = 2;
+}
+
+message GetItemDetailResponse {
+  string id = 1;
+  string name = 2;
+  int32 runway_days = 3;
+  string stockout_date = 4;
+  repeated StockPoint consumption_history = 5;
+  repeated Movement movement_history = 6;
+}

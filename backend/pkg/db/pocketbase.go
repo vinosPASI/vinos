@@ -159,3 +159,25 @@ func (c *PocketBaseClient) GetRecord(collection, id string) ([]byte, error) {
 
 	return io.ReadAll(resp.Body)
 }
+
+func (c *PocketBaseClient) ListRecords(collection string, params map[string]string) ([]byte, error) {
+	endpoint := fmt.Sprintf("%s/api/collections/%s/records", c.BaseURL, collection)
+	req, err := http.NewRequest("GET", endpoint, nil)
+	if err != nil {
+		return nil, err
+	}
+	q := req.URL.Query()
+	for k, v := range params {
+		q.Add(k, v)
+	}
+	req.URL.RawQuery = q.Encode()
+	if c.AdminToken != "" {
+		req.Header.Set("Authorization", c.AdminToken)
+	}
+	resp, err := c.HTTPClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	return io.ReadAll(resp.Body)
+}
