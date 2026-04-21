@@ -1,15 +1,17 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../providers/vision_provider.dart';
 
-class CameraScreen extends StatefulWidget {
+class CameraScreen extends ConsumerStatefulWidget {
   const CameraScreen({super.key});
 
   @override
-  State<CameraScreen> createState() => _CameraScreenState();
+  ConsumerState<CameraScreen> createState() => _CameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class _CameraScreenState extends ConsumerState<CameraScreen> {
   final ImagePicker _picker = ImagePicker();
   File? _image;
 
@@ -25,6 +27,9 @@ class _CameraScreenState extends State<CameraScreen> {
       setState(() {
         _image = File(pickedFile.path);
       });
+      
+      final bytes = await pickedFile.readAsBytes();
+      ref.read(visionProvider.notifier).analyzeImage(pickedFile.name, bytes);
     }
   }
 
@@ -163,6 +168,8 @@ class _CameraScreenState extends State<CameraScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final visionState = ref.watch(visionProvider);
+
     return Scaffold(
       backgroundColor: cremaClaro,
       appBar: AppBar(
@@ -224,7 +231,11 @@ class _CameraScreenState extends State<CameraScreen> {
               children: [
                 _buildBotMessage("Hola 👋 Toma una foto de la etiqueta o botella de vino para comenzar el análisis."),
                 if (_image != null) _buildImageBubble(_image!),
-                if (_image != null) _buildTypingIndicator(),
+                if (visionState.isLoading) _buildTypingIndicator(),
+                if (visionState.error != null)
+                  _buildBotMessage("Error al analizar: ${visionState.error}"),
+                if (visionState.result != null)
+                  _buildBotMessage("💡 ¡Análisis completado!\n\nManga: ${visionState.result?.wineData.brand}\nCepa: ${visionState.result?.wineData.cepaVariedad}\nAño: ${visionState.result?.wineData.vintageYear}"),
               ],
             ),
           ),
@@ -238,7 +249,7 @@ class _CameraScreenState extends State<CameraScreen> {
               width: double.infinity,
               height: 52,
               child: ElevatedButton.icon(
-                onPressed: _takePhoto,
+                onPressed: visionState.isLoading ? null : _takePhoto,
                 icon: const Icon(Icons.camera_alt_outlined, size: 20),
                 label: const Text(
                   "Tomar foto",
