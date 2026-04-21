@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
-
-// Configuración del cliente HTTP con soporte para HTTP/2
+import 'package:flutter/foundation.dart';
 class DioClient {
   static const String baseUrl = 'https://winery-api.stuko.dev';
   
@@ -16,17 +15,21 @@ class DioClient {
     ),
   );
 
-  DioClient() {
-    _dio.httpClientAdapter = Http2Adapter(
-      ConnectionManager(
-        idleTimeout: const Duration(seconds: 15),
-      ),
-    );
+  static final DioClient _instance = DioClient._internal();
+  
+  factory DioClient() {
+    return _instance;
+  }
+
+  DioClient._internal() {
+    if (!kIsWeb) {
+      _dio.httpClientAdapter = Http2Adapter(
+        ConnectionManager(
+          idleTimeout: const Duration(seconds: 15),
+        ),
+      );
+    }
   }
 
   Dio get dio => _dio;
-
-  static final DioClient _instance = DioClient._internal();
-  factory DioClient() => _instance;
-  DioClient._internal();
 }
