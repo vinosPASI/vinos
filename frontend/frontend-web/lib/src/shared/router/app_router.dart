@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend_web/src/features/auth/presentation/pages/login_page.dart';
+import 'package:frontend_web/src/features/dashboard/presentation/screens/dashboard_screen.dart';
+import 'package:frontend_web/src/features/inventory/presentation/screens/inventory_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: '/login',
@@ -11,11 +12,19 @@ final appRouter = GoRouter(
       builder: (context, state) => const LoginPage(),
     ),
     GoRoute(
+      path: '/dashboard',
+      name: 'dashboard',
+      builder: (context, state) => const DashboardScreen(),
+    ),
+    GoRoute(
+      path: '/inventory',
+      name: 'inventory',
+      builder: (context, state) => const InventoryScreen(),
+    ),
+    GoRoute(
       path: '/',
       name: 'home',
-      builder: (context, state) => const Scaffold(
-        body: Center(child: Text('Home')),
-      ),
+      redirect: (context, state) => '/dashboard',
     ),
   ],
 );
