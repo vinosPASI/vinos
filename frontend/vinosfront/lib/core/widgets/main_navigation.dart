@@ -9,30 +9,26 @@ class MainNavigation extends StatelessWidget {
   const MainNavigation({super.key, required this.child});
 
   int _getIndex(String location) {
-    if (location.startsWith('/home')) return 0;
-    if (location.startsWith('/chat')) return 1;
-    if (location.startsWith('/notifications')) return 2;
+    if (location.startsWith('/home'))          return 0;
+    if (location.startsWith('/chat'))          return 1;
+    if (location.startsWith('/inventory'))     return 2;
+    if (location.startsWith('/notifications')) return 3;
     return 0;
   }
 
   void _onTap(BuildContext context, int index) {
     switch (index) {
-      case 0:
-        context.go('/home');
-        break;
-      case 1:
-        context.go('/chat');
-        break;
-      case 2:
-        context.go('/notifications');
-        break;
+      case 0: context.go('/home');          break;
+      case 1: context.go('/chat');          break;
+      case 2: context.go('/inventory');     break;
+      case 3: context.go('/notifications'); break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final s = ScreenDimensions.of(context);
-    final location = GoRouterState.of(context).uri.toString();
+    final s            = ScreenDimensions.of(context);
+    final location     = GoRouterState.of(context).uri.toString();
     final currentIndex = _getIndex(location);
 
     return Scaffold(
@@ -59,9 +55,10 @@ class _BottomNav extends StatelessWidget {
   });
 
   static const _items = [
-    _NavItem(icon: Icons.home_outlined,       activeIcon: Icons.home,              label: 'Inicio'),
-    _NavItem(icon: Icons.camera_alt_outlined, activeIcon: Icons.camera_alt,        label: 'IA'),
-    _NavItem(icon: Icons.notifications_outlined, activeIcon: Icons.notifications,  label: 'Alertas'),
+    _NavItem(icon: Icons.home_outlined,          activeIcon: Icons.home,              label: 'Inicio'),
+    _NavItem(icon: Icons.camera_alt_outlined,     activeIcon: Icons.camera_alt,        label: 'IA'),
+    _NavItem(icon: Icons.inventory_2_outlined,    activeIcon: Icons.inventory_2,       label: 'Inventario'),
+    _NavItem(icon: Icons.notifications_outlined,  activeIcon: Icons.notifications,     label: 'Alertas'),
   ];
 
   @override
@@ -134,24 +131,17 @@ class _NavButton extends StatelessWidget {
             ),
             child: Icon(
               isSelected ? item.activeIcon : item.icon,
-              color: isSelected
-                  ? VinotecaColors.doradoPastel
-                  : Colors.white70,
+              color: isSelected ? VinotecaColors.doradoPastel : Colors.white70,
               size: s.wp(5.8),
             ),
           ),
-
           SizedBox(height: s.hp(0.4)),
-
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             style: TextStyle(
               fontSize: s.sp(10.5),
-              fontWeight:
-                  isSelected ? FontWeight.w700 : FontWeight.w400,
-              color: isSelected
-                  ? VinotecaColors.doradoPastel
-                  : Colors.white70,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
+              color: isSelected ? VinotecaColors.doradoPastel : Colors.white70,
             ),
             child: Text(item.label),
           ),
