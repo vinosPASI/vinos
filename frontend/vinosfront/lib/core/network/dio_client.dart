@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
-import 'package:flutter/foundation.dart'; // 👈 IMPORTANTE (para kIsWeb)
+import 'package:flutter/foundation.dart';
 import '../config/app_config.dart';
+import '../utils/secure_storage_service.dart';
 
 class DioClient {
   late final Dio dio;
+  final SecureStorageService _storageService;
 
-  DioClient() {
+  DioClient(this._storageService) {
     dio = Dio(
       BaseOptions(
         baseUrl: AppConfig.baseUrl,
@@ -17,8 +19,6 @@ class DioClient {
         },
       ),
     );
-
-    // 🔥 SOLO usar HTTP/2 si NO es web
     if (!kIsWeb) {
       dio.httpClientAdapter = Http2Adapter(
         ConnectionManager(
@@ -26,11 +26,13 @@ class DioClient {
         ),
       );
     }
-
-    // 🔹 Interceptors (logs)
     dio.interceptors.add(
       InterceptorsWrapper(
-        onRequest: (options, handler) {
+        onRequest: (options, handler) async {
+          final token = await _storageService.getToken();
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
           print("REQUEST[${options.method}] => ${options.uri}");
           return handler.next(options);
         },
