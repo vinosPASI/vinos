@@ -1,17 +1,8 @@
-name: frontend_web
-description: "A new Flutter project."
-publish_to: 'none'
-
-version: 1.0.0+1
-
 environment:
   sdk: ^3.11.0
-name: vinoteca_frontend_web
+name: frontend_web
 description: Intelligent Wine Inventory Management Platform (Web)
 version: 1.0.0+1
-
-environment:
-  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -22,18 +13,16 @@ dependencies:
   dio: ^5.4.0
   go_router: ^17.0.0
   dio_http2_adapter: ^2.5.0
-  cupertino_icons: ^1.0.2
   fl_chart: ^0.63.0 # Para los gráficos de torta y tendencias
   fuzzy: ^0.5.1 # Para la búsqueda inteligente de insumos
-  flutter_riverpod: ^2.3.6 # Para el manejo de estado profesional
   google_fonts: ^6.1.0 # Para la tipografía premium
+  file_picker: ^8.0.0 # Para selección de archivos (imágenes y CSVs)
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^6.0.0
-  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
