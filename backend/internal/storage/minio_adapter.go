@@ -53,3 +53,19 @@ func (a *MinIOAdapter) UploadFile(ctx context.Context, bucket, objectName string
 	url := fmt.Sprintf("%s/%s/%s", a.client.EndpointURL().String(), bucket, objectName)
 	return url, nil
 }
+
+// DownloadFile obtiene un objeto de MinIO y retorna sus bytes.
+func (a *MinIOAdapter) DownloadFile(ctx context.Context, bucket, objectName string) ([]byte, error) {
+	obj, err := a.client.GetObject(ctx, bucket, objectName, minio.GetObjectOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("error obteniendo objeto de MinIO: %w", err)
+	}
+	defer obj.Close()
+
+	data, err := io.ReadAll(obj)
+	if err != nil {
+		return nil, fmt.Errorf("error leyendo contenido del objeto: %w", err)
+	}
+
+	return data, nil
+}
