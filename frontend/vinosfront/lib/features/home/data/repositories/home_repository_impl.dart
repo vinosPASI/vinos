@@ -12,7 +12,7 @@ class HomeRepositoryImpl implements HomeRepository {
   @override
   Future<CreateBottlingOrderResponse> simulateBottlingOrder(String wineId, int quantity) async {
     final response = await _dio.post(
-      '/stuko.api.v1.production.ProductionService/CreateBottlingOrder',
+      '/v1/production/bottling-order',
       data: {
         'wine_id': wineId,
         'target_quantity': quantity,
