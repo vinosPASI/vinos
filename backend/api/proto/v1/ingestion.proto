@@ -4,10 +4,17 @@ package stuko.api.v1.ingestion;
 
 option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/ingestionpb;ingestionpb";
 
+import "google/api/annotations.proto";
+
 // Servicio que dispara el pipeline de ingesta y procesamiento de datos etl 
 
 service IngestionService {
-  rpc TriggerDataImport(TriggerDataImportRequest) returns (TriggerDataImportResponse);
+  rpc TriggerDataImport(TriggerDataImportRequest) returns (TriggerDataImportResponse) {
+    option (google.api.http) = {
+      post: "/v1/ingestion/import"
+      body: "*"
+    };
+  }
 }
 
 message TriggerDataImportRequest {

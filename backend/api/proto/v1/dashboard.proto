@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package stuko.api.v1.dashboard;
+
+option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/dashboardpb;dashboardpb";
+
+import "google/api/annotations.proto";
+
+// Servicio Orquestador para Analítica y Predicciones
+service DashboardService {
+  rpc GetDashboardStats(GetDashboardStatsRequest) returns (GetDashboardStatsResponse) {
+    option (google.api.http) = {
+      get: "/v1/dashboard/stats"
+    };
+  }
+  rpc GetHighValueHoldings(GetHighValueHoldingsRequest) returns (GetHighValueHoldingsResponse) {
+    option (google.api.http) = {
+      post: "/v1/dashboard/high-value-holdings"
+      body: "*"
+    };
+  }
+  rpc GetMarketExposure(GetMarketExposureRequest) returns (GetMarketExposureResponse) {
+    option (google.api.http) = {
+      post: "/v1/dashboard/market-exposure"
+      body: "*"
+    };
+  }
+  rpc GetForecastingFeed(GetForecastingFeedRequest) returns (GetForecastingFeedResponse) {
+    option (google.api.http) = {
+      post: "/v1/dashboard/forecasting-feed"
+      body: "*"
+    };
+  }
+}
+
+message GetDashboardStatsRequest {}
+
+message GetDashboardStatsResponse {
+  int32 total_bottles = 1;
+  float total_value = 2;
+  int32 categories_count = 3;
+  int32 pending_alerts = 4;
+}
+
+message GetHighValueHoldingsRequest {}
+
+message GetHighValueHoldingsResponse {
+  repeated HoldingItem items = 1;
+}
+
+message HoldingItem {
+  string name = 1;
+  string category = 2;
+  float value = 3;
+  float percentage_of_portfolio = 4;
+}
+
+message GetMarketExposureRequest {}
+
+message GetMarketExposureResponse {
+  repeated ExposureCategory categories = 1;
+}
+
+message ExposureCategory {
+  string category_name = 1;
+  float value = 2;
+  float percentage = 3;
+}
+
+message GetForecastingFeedRequest {}
+
+message GetForecastingFeedResponse {
+  repeated ForecastingAlert alerts = 1;
+}
+
+message ForecastingAlert {
+  string id = 1;
+  string message = 2;
+  string severity = 3; // "HIGH", "MEDIUM", "LOW"
+  string created_at = 4;
+  string related_item_id = 5;
+}
