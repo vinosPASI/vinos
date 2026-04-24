@@ -11,7 +11,7 @@ class InventoryRepositoryImpl implements InventoryRepository {
   Future<List<InventoryItem>> getInventoryItems() async {
     try {
       final response = await _dio.post(
-        '/stuko.api.v1.inventory.InventoryService/ListInventoryItems',
+        '/v1/inventory/list',
         data: {}, // Vacío si no hay request con parámetros
       );
 
