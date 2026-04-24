@@ -38,3 +38,29 @@ func (h *Handler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginRes
 	logger.Info("login exitoso", "user_id", resp.UserId, "role", resp.Role.String())
 	return resp, nil
 }
+
+// Register maneja la petición gRPC para registrar un nuevo usuario.
+func (h *Handler) Register(ctx context.Context, req *pb.RegisterRequest) (*pb.RegisterResponse, error) {
+	if req.Email == "" || req.Password == "" || req.PasswordConfirm == "" {
+		return nil, status.Error(codes.InvalidArgument, "email, password y password_confirm son requeridos")
+	}
+
+	if req.Password != req.PasswordConfirm {
+		return nil, status.Error(codes.InvalidArgument, "las contraseñas no coinciden")
+	}
+
+	// Mapear rol proto a string de PocketBase
+	pbRole := "operator" // Default
+	if req.Role == pb.Role_ROLE_ADMIN {
+		pbRole = "admin"
+	}
+
+	resp, err := h.svc.Register(ctx, req.Email, req.Password, req.PasswordConfirm, req.Name, pbRole)
+	if err != nil {
+		logger.Error("error en Register", "email", req.Email, "error", err)
+		return nil, err
+	}
+
+	logger.Info("registro exitoso", "user_id", resp.UserId, "role", pbRole)
+	return resp, nil
+}
