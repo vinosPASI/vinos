@@ -159,18 +159,18 @@ class DashboardScreen extends ConsumerWidget {
         Expanded(
           child: SummaryCard(
             title: "STOCK NETO TOTAL",
-            value: "${stats.totalNetStock.toInt()} BTL",
+            value: "${stats.totalBottles} BTL",
             icon: Icons.inventory_2_rounded,
-            trend: stats.stockTrend,
+            trend: "+0%", // Ya no viene en el backend temporalmente
           ),
         ),
         const SizedBox(width: 24),
         Expanded(
           child: SummaryCard(
             title: "ALERTAS URGENTES",
-            value: stats.urgentAlerts.toString(),
+            value: stats.pendingAlerts.toString(),
             icon: Icons.warning_rounded,
-            trend: stats.alertsTrend,
+            trend: "N/A", // Ya no viene en el backend temporalmente
           ),
         ),
       ],

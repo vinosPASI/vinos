@@ -9,8 +9,8 @@ abstract class DashboardRepository {
   Future<List<HoldingItem>> getHighValueHoldings();
   
   // Obtener datos para el gráfico de exposición
-  Future<Map<String, List<double>>> getMarketExposureData();
+  Future<List<ExposureCategory>> getMarketExposureData();
   
   // Obtener los ítems del feed de predicciones
-  Future<List<Map<String, dynamic>>> getForecastingFeed();
+  Future<List<ForecastingAlert>> getForecastingFeed();
 }

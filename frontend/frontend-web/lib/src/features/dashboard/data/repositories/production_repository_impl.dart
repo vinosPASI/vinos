@@ -17,7 +17,7 @@ class ProductionRepositoryImpl implements ProductionRepository {
     int plannedDate,
   ) async {
     final response = await _dio.post(
-      '/stuko.api.v1.production.ProductionService/CreateBottlingOrder',
+      '/v1/production/bottling-order',
       data: {
         'wine_id': wineId,
         'target_quantity': quantity,

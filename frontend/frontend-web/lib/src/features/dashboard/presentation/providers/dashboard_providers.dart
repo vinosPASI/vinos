@@ -5,31 +5,20 @@ import '../../data/repositories/dashboard_repository_impl.dart';
 import '../../data/repositories/vision_repository_impl.dart';
 import '../../data/repositories/production_repository_impl.dart';
 
-// ========================================
-// Providers del Dashboard (existentes)
-// ========================================
-
-// Provider para obtener las estadísticas (KPIs) de forma asíncrona
 final asyncDashboardStatsProvider = FutureProvider<DashboardStats>((ref) async {
   final repo = ref.watch(dashboardRepositoryProvider);
   return repo.getDashboardStats();
 });
 
-// Provider para obtener los holdings de alto valor de forma asíncrona
 final asyncHighValueHoldingsProvider = FutureProvider<List<HoldingItem>>((ref) async {
   final repo = ref.watch(dashboardRepositoryProvider);
   return repo.getHighValueHoldings();
 });
 
-// Provider para el feed de predicciones
-final asyncForecastingFeedProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
+final asyncForecastingFeedProvider = FutureProvider<List<ForecastingAlert>>((ref) async {
   final repo = ref.watch(dashboardRepositoryProvider);
   return repo.getForecastingFeed();
 });
-
-// ========================================
-// Estado y Provider para Vision (Fase 1)
-// ========================================
 
 enum AnalysisStatus { initial, uploading, analyzing, success, error }
 
@@ -90,11 +79,6 @@ final analyzeLabelProvider =
   return AnalyzeLabelNotifier(ref);
 });
 
-// ========================================
-// Provider para Production Alerts (Fase 2)
-// ========================================
-
-// Vinos de muestra para simular stockout
 final _mockWines = [
   {'id': 'WINE-001', 'name': 'Château Margaux 2015', 'quantity': 5000, 'unit': 'BOTELLA_750ML'},
   {'id': 'WINE-002', 'name': 'Opus One 2018', 'quantity': 3000, 'unit': 'BOTELLA_750ML'},
@@ -125,9 +109,7 @@ final asyncProductionAlertsProvider = FutureProvider<List<ProductionAlertItem>>(
         wineName: wine['name'] as String,
         response: result,
       ));
-    } catch (_) {
-      // Ignorar fallas individuales, seguir con el siguiente
-    }
+    } catch (_) {}
   }
   return alerts;
 });
