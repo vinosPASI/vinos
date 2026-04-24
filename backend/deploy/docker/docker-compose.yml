@@ -76,6 +76,7 @@ services:
       - "8080:8080"
       - "9901:9901"
     volumes:
+      - ../../build/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
       - ../../build/envoy/api_descriptor.pb:/etc/envoy/api_descriptor.pb:ro
     depends_on:
       - backend
