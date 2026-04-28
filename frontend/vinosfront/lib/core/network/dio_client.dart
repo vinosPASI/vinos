@@ -12,8 +12,8 @@ class DioClient {
     dio = Dio(
       BaseOptions(
         baseUrl: AppConfig.baseUrl,
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 10),
+        connectTimeout: const Duration(seconds: 60),
+        receiveTimeout: const Duration(seconds: 65),
         headers: {
           "Content-Type": "application/json",
         },
@@ -22,7 +22,7 @@ class DioClient {
     if (!kIsWeb) {
       dio.httpClientAdapter = Http2Adapter(
         ConnectionManager(
-          idleTimeout: const Duration(seconds: 10),
+          idleTimeout: const Duration(seconds: 15),
         ),
       );
     }
