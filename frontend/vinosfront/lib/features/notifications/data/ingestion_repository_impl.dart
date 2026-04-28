@@ -12,7 +12,7 @@ class IngestionRepositoryImpl implements IngestionRepository {
   @override
   Future<TriggerDataImportResponse> importCSV(String fileReference, String entityType) async {
     final response = await _dio.post(
-      '/stuko.api.v1.ingestion.IngestionService/TriggerDataImport',
+      '/v1/ingestion/import',
       data: {
         'file_reference': fileReference,
         'entity_type': entityType,
