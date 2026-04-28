@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/theme/app_colors.dart';
 
+import '../../domain/models/dashboard_models.dart';
+
 class CriticalInsumosList extends StatelessWidget {
-  final List<Map<String, dynamic>> items;
+  final List<ForecastingAlert> items;
 
   const CriticalInsumosList({super.key, required this.items});
 
@@ -36,7 +38,7 @@ class CriticalInsumosList extends StatelessWidget {
                     width: 8,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: item['score'] > 0.8 ? Colors.redAccent : AppColors.winePrimary,
+                      color: item.severity == 'HIGH' ? Colors.redAccent : AppColors.winePrimary,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -45,8 +47,8 @@ class CriticalInsumosList extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(item['name'], style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.wineSecondary)),
-                        Text("Stock: ${item['net_stock']} unidades", style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                        Text(item.message, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.wineSecondary)),
+                        Text("Creado: ${item.createdAt}", style: const TextStyle(fontSize: 12, color: Colors.grey)),
                       ],
                     ),
                   ),

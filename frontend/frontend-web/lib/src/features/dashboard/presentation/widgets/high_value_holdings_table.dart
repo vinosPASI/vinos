@@ -49,7 +49,7 @@ class HighValueHoldingsTable extends ConsumerWidget {
               },
               children: [
                 _buildHeaderRow(),
-                ...holdings.map((item) => _buildDataRow(item.name, item.region, "\$${item.value.toInt()}", item.trend)).toList(),
+                ...holdings.map((item) => _buildDataRow(item.name, item.category, "\$${item.value.toInt()}", "${item.percentageOfPortfolio.toStringAsFixed(1)}%")).toList(),
               ],
             ),
           ),
@@ -62,25 +62,25 @@ class HighValueHoldingsTable extends ConsumerWidget {
     return const TableRow(
       children: [
         Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("NOMBRE DE COSECHA", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
-        Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("REGIÓN", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
+        Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("CATEGORÍA", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
         Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("VALOR (USD)", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
-        Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("TENDENCIA", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
+        Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("PORTAFOLIO", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
       ],
     );
   }
 
-  TableRow _buildDataRow(String name, String region, String value, String trend) {
+  TableRow _buildDataRow(String name, String category, String value, String portfolioPercentage) {
     return TableRow(
       children: [
         Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.wineSecondary))),
-        Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(region, style: const TextStyle(fontSize: 13, color: Colors.grey))),
+        Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(category, style: const TextStyle(fontSize: 13, color: Colors.grey))),
         Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.wineSecondary))),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16), 
-          child: Text(trend, style: TextStyle(
+          child: Text(portfolioPercentage, style: TextStyle(
             fontSize: 12, 
             fontWeight: FontWeight.bold, 
-            color: trend.contains('+') ? Colors.green : Colors.redAccent
+            color: AppColors.sand
           ))
         ),
       ],
