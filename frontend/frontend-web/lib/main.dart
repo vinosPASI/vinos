@@ -1,33 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'src/shared/theme/app_colors.dart';
-import 'src/shared/providers/navigation_providers.dart';
-import 'src/features/dashboard/presentation/screens/dashboard_screen.dart';
-import 'src/features/detail/presentation/screens/predictive_detail_screen.dart';
+import 'package:frontend_web/src/shared/router/app_router.dart';
+import 'package:frontend_web/src/shared/theme/app_colors.dart';
 
 void main() {
-  runApp(const ProviderScope(child: VinotecaIntelligenceApp()));
+  runApp(
+    const ProviderScope(
+      child: MyApp(),
+    ),
+  );
 }
 
-class VinotecaIntelligenceApp extends StatelessWidget {
-  const VinotecaIntelligenceApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Vinoteca Intelligence',
+    return MaterialApp.router(
+      title: 'VINOS',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        brightness: Brightness.light,
-        primaryColor: AppColors.vinoPastel,
-        scaffoldBackgroundColor: AppColors.cremaClaro,
-        fontFamily: 'Inter',
-        textTheme: const TextTheme(
-          displayLarge: TextStyle(color: AppColors.textoPrincipal, fontWeight: FontWeight.bold),
-          bodyMedium: TextStyle(color: AppColors.textoPrincipal),
-        ),
+        useMaterial3: true,
+        colorSchemeSeed: AppColors.winePrimary,
+        scaffoldBackgroundColor: AppColors.background,
+        fontFamily: 'Outfit',
       ),
-      home: const MainNavigationEntry(),
+      routerConfig: appRouter,
     );
   }
 }

@@ -2,11 +2,24 @@ syntax = "proto3";
 
 package stuko.api.v1.identity;
 
-option go_package = "github.com/stuko/backend/api/proto/v1/identity;identity";
+option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/identitypb;identitypb";
+
+import "google/api/annotations.proto";
 
 // Gestiona el acceso y autenticación de usuarios actuando como intermediario con Pocket
 service IdentityService {
-  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/v1/identity/login"
+      body: "*"
+    };
+  }
+  rpc Register(RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http) = {
+      post: "/v1/identity/register"
+      body: "*"
+    };
+  }
 }
 enum Role {
   ROLE_UNSPECIFIED = 0;
@@ -23,4 +36,17 @@ message LoginResponse {
   string access_token = 1; // PocketBase
   string user_id = 2;
   Role role = 3;         // Admin y  Operator y nada
+}
+
+message RegisterRequest {
+  string email = 1;
+  string password = 2;
+  string password_confirm = 3;
+  string name = 4;
+  Role role = 5; // Optional. If not provided, it could default to OPERATOR.
+}
+
+message RegisterResponse {
+  string user_id = 1;
+  string message = 2;
 }

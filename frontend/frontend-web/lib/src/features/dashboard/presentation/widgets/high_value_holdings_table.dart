@@ -30,8 +30,8 @@ class HighValueHoldingsTable extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text("Activos de Alto Valor", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal)),
-              Text("ÚLTIMA REVALORIZACIÓN: HACE 2H", style: TextStyle(fontSize: 10, color: AppColors.textoSecundario, fontWeight: FontWeight.bold)),
+              const Text("Activos de Alto Valor", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.wineSecondary)),
+              Text("ÚLTIMA REVALORIZACIÓN: HACE 2H", style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold)),
             ],
           ),
           const SizedBox(height: 24),
@@ -63,9 +63,9 @@ class HighValueHoldingsTable extends ConsumerWidget {
     return const TableRow(
       children: [
         Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("NOMBRE DE COSECHA", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
-        Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("REGIÓN", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
+        Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("CATEGORÍA", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
         Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("VALOR (USD)", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
-        Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("TENDENCIA", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
+        Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Text("PORTAFOLIO", style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black26))),
       ],
     );
   }
@@ -87,10 +87,10 @@ class HighValueHoldingsTable extends ConsumerWidget {
         Padding(padding: EdgeInsets.symmetric(vertical: 16), child: Text(value, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal))),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 16), 
-          child: Text(trend, style: TextStyle(
+          child: Text(portfolioPercentage, style: TextStyle(
             fontSize: 12, 
             fontWeight: FontWeight.bold, 
-            color: trend.contains('+') ? Colors.green : Colors.redAccent
+            color: AppColors.sand
           ))
         ),
       ],

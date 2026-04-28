@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../shared/theme/app_colors.dart';
 
+import '../../domain/models/dashboard_models.dart';
+
 class CriticalInsumosList extends StatelessWidget {
-  final List<Map<String, dynamic>> items;
+  final List<ForecastingAlert> items;
 
   const CriticalInsumosList({super.key, required this.items});
 
@@ -13,7 +15,7 @@ class CriticalInsumosList extends StatelessWidget {
       children: [
         const Text(
           "Insumos Críticos",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.wineSecondary),
         ),
         const SizedBox(height: 20),
         ListView.separated(
@@ -26,9 +28,9 @@ class CriticalInsumosList extends StatelessWidget {
             return Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: AppColors.cremaClaro,
+                color: AppColors.background,
                 borderRadius: BorderRadius.circular(12),
-                side: const BorderSide(color: AppColors.doradoPastel, width: 0.5), // CORREGIDO AQUÍ
+                side: const BorderSide(color: AppColors.sand, width: 0.5),
               ),
               child: Row(
                 children: [
@@ -36,7 +38,7 @@ class CriticalInsumosList extends StatelessWidget {
                     width: 8,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: item['score'] > 0.8 ? Colors.redAccent : AppColors.vinoPastel,
+                      color: item.severity == 'HIGH' ? Colors.redAccent : AppColors.winePrimary,
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),
@@ -45,12 +47,12 @@ class CriticalInsumosList extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(item['name'], style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textoPrincipal)),
-                        Text("Stock: ${item['net_stock']} unidades", style: const TextStyle(fontSize: 12, color: AppColors.textoSecundario)),
+                        Text(item.message, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.wineSecondary)),
+                        Text("Creado: ${item.createdAt}", style: const TextStyle(fontSize: 12, color: Colors.grey)),
                       ],
                     ),
                   ),
-                  const Icon(Icons.warning_amber_rounded, color: AppColors.vinoPastel, size: 20),
+                  const Icon(Icons.warning_amber_rounded, color: AppColors.winePrimary, size: 20),
                 ],
               ),
             );

@@ -1,4 +1,4 @@
-# vinoteca_frontend_web
+# frontend_web
 
 A new Flutter project.
 

@@ -2,12 +2,19 @@ syntax = "proto3";
 
 package stuko.api.v1.vision;
 
-option go_package = "github.com/stuko/backend/api/proto/v1/vision;vision";
+option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/visionpb;visionpb";
+
+import "google/api/annotations.proto";
 
 // Analiza una etiqueta de vino para extraer su información
 
 service VisionService {
-  rpc AnalyzeWineLabel(AnalyzeWineLabelRequest) returns (AnalyzeWineLabelResponse);
+  rpc AnalyzeWineLabel(AnalyzeWineLabelRequest) returns (AnalyzeWineLabelResponse) {
+    option (google.api.http) = {
+      post: "/v1/vision/analyze"
+      body: "*"
+    };
+  }
 }
 
 message AnalyzeWineLabelRequest {

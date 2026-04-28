@@ -30,8 +30,8 @@ class MarketExposureChart extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: const [
-                  Text("Exposición de Mercado", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textoPrincipal)),
-                  Text("RENDIMIENTO REGIONAL - 6 MESES", style: TextStyle(fontSize: 10, color: AppColors.textoSecundario, fontWeight: FontWeight.bold)),
+                  Text("Exposición de Mercado", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.wineSecondary)),
+                  Text("RENDIMIENTO REGIONAL - 6 MESES", style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold)),
                 ],
               ),
               _buildLegend(),
@@ -63,9 +63,9 @@ class MarketExposureChart extends StatelessWidget {
                 ),
                 borderData: FlBorderData(show: false),
                 lineBarsData: [
-                  _lineData(AppColors.vinoPastel, [const FlSpot(0, 3), const FlSpot(2, 4), const FlSpot(4, 3.5), const FlSpot(5, 5)]),
-                  _lineData(AppColors.doradoPastel, [const FlSpot(0, 1), const FlSpot(2, 2.5), const FlSpot(4, 3), const FlSpot(5, 7)]),
-                  _lineData(AppColors.vinoOscuro.withOpacity(0.3), [const FlSpot(0, 2), const FlSpot(2, 2), const FlSpot(4, 4), const FlSpot(5, 4.5)]),
+                  _lineData(AppColors.winePrimary, [const FlSpot(0, 3), const FlSpot(2, 4), const FlSpot(4, 3.5), const FlSpot(5, 5)]),
+                  _lineData(AppColors.sand, [const FlSpot(0, 1), const FlSpot(2, 2.5), const FlSpot(4, 3), const FlSpot(5, 7)]),
+                  _lineData(AppColors.wineSecondary.withOpacity(0.3), [const FlSpot(0, 2), const FlSpot(2, 2), const FlSpot(4, 4), const FlSpot(5, 4.5)]),
                 ],
               ),
             ),
@@ -89,9 +89,9 @@ class MarketExposureChart extends StatelessWidget {
   Widget _buildLegend() {
     return Row(
       children: [
-        _legendItem("BORDEAUX", AppColors.vinoPastel),
+        _legendItem("BORDEAUX", AppColors.winePrimary),
         const SizedBox(width: 16),
-        _legendItem("BORGOÑA", AppColors.doradoPastel),
+        _legendItem("BORGOÑA", AppColors.sand),
         const SizedBox(width: 16),
         _legendItem("TOSCANA", Colors.black12),
       ],
@@ -103,7 +103,7 @@ class MarketExposureChart extends StatelessWidget {
       children: [
         Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
         const SizedBox(width: 8),
-        Text(label, style: const TextStyle(fontSize: 10, color: AppColors.textoSecundario, fontWeight: FontWeight.bold)),
+        Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold)),
       ],
     );
   }
