@@ -9,7 +9,7 @@ class AuthDatasource {
   Future<UserModel> login(String email, String password) async {
     try {
       final response = await _dio.post(
-        '/stuko.api.v1.identity.IdentityService/Login',
+        '/v1/identity/login',
         data: {
           'email': email,
           'password': password,
@@ -25,6 +25,30 @@ class AuthDatasource {
     } on DioException catch (e) {
       final message = e.response?.data['message'] ?? e.message;
       throw Exception('Error de red: $message');
+    }
+  }
+
+  // Ejecuta el registro contra el IdentityService
+  Future<UserModel> register(String email, String password, String name) async {
+    try {
+      final response = await _dio.post(
+        '/v1/identity/register',
+        data: {
+          'email': email,
+          'password': password,
+          'name': name,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+        return UserModel.fromJson(data, email);
+      } else {
+        throw Exception('Error al registrar usuario: ${response.statusMessage}');
+      }
+    } on DioException catch (e) {
+      final message = e.response?.data['message'] ?? e.message;
+      throw Exception('Error de red en registro: $message');
     }
   }
 }
