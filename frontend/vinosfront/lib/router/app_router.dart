@@ -6,12 +6,14 @@ import 'package:vinosfront/features/camera_ia/presentation/screens/camera_screen
 import 'package:vinosfront/features/notifications/presentation/screens/notification_screen.dart';
 import 'package:vinosfront/features/auth/presentation/screens/login_screen.dart';
 import 'package:vinosfront/features/auth/presentation/screens/register_screen.dart';
+import 'package:vinosfront/features/inventory/presentation/screens/inventory_screen.dart';
 
 abstract class AppRoutes {
   static const login         = '/login';
   static const register      = '/register';
   static const home          = '/home';
   static const chat          = '/chat';
+  static const inventory     = '/inventory';
   static const notifications = '/notifications';
 }
 
@@ -75,6 +77,12 @@ final GoRouter appRouter = GoRouter(
           path: AppRoutes.chat,
           name: 'chat',
           builder: (context, state) => const CameraScreen(),
+        ),
+
+        GoRoute(
+          path: AppRoutes.inventory,
+          name: 'inventory',
+          builder: (context, state) => const InventoryScreen(),
         ),
 
         GoRoute(
