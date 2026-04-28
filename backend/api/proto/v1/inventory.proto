@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package stuko.api.v1.inventory;
+
+option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/inventorypb;inventorypb";
+
+import "google/api/annotations.proto";
+
+// Servicio central para la gestión de productos y stock de inventario
+service InventoryService {
+  rpc ListInventoryItems(ListInventoryItemsRequest) returns (ListInventoryItemsResponse) {
+    option (google.api.http) = {
+      post: "/v1/inventory/list"
+      body: "*"
+    };
+  }
+  rpc GetInventoryItem(GetInventoryItemRequest) returns (GetInventoryItemResponse) {
+    option (google.api.http) = {
+      get: "/v1/inventory/{id}"
+    };
+  }
+  rpc CreateInventoryItem(CreateInventoryItemRequest) returns (CreateInventoryItemResponse) {
+    option (google.api.http) = {
+      post: "/v1/inventory"
+      body: "*"
+    };
+  }
+  rpc UpdateInventoryItem(UpdateInventoryItemRequest) returns (UpdateInventoryItemResponse) {
+    option (google.api.http) = {
+      put: "/v1/inventory/{id}"
+      body: "*"
+    };
+  }
+  rpc DeleteInventoryItem(DeleteInventoryItemRequest) returns (DeleteInventoryItemResponse) {
+    option (google.api.http) = {
+      delete: "/v1/inventory/{id}"
+    };
+  }
+  
+  // Registra una entrada o salida de stock y actualiza el inventario general
+  rpc RecordMovement(RecordMovementRequest) returns (RecordMovementResponse) {
+    option (google.api.http) = {
+      post: "/v1/inventory/movement"
+      body: "*"
+    };
+  }
+}
+
+message InventoryItem {
+  string id = 1;
+  string name = 2;
+  string type = 3; // "wine", "material", "packaging", etc.
+  int32 quantity = 4;
+  string unit = 5; // "liters", "units", "boxes", etc.
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+message ListInventoryItemsRequest {
+  int32 page = 1;
+  int32 limit = 2;
+  string filter = 3; // Optional filter string
+}
+
+message ListInventoryItemsResponse {
+  repeated InventoryItem items = 1;
+  int32 total_items = 2;
+  int32 total_pages = 3;
+}
+
+message GetInventoryItemRequest {
+  string id = 1;
+}
+
+message GetInventoryItemResponse {
+  InventoryItem item = 1;
+}
+
+message CreateInventoryItemRequest {
+  string name = 1;
+  string type = 2;
+  int32 quantity = 3;
+  string unit = 4;
+}
+
+message CreateInventoryItemResponse {
+  InventoryItem item = 1;
+}
+
+message UpdateInventoryItemRequest {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  int32 quantity = 4;
+  string unit = 5;
+}
+
+message UpdateInventoryItemResponse {
+  InventoryItem item = 1;
+}
+
+message DeleteInventoryItemRequest {
+  string id = 1;
+}
+
+message DeleteInventoryItemResponse {
+  bool success = 1;
+}
+
+message RecordMovementRequest {
+  string item_id = 1;
+  string movement_type = 2; // "IN" or "OUT"
+  int32 quantity = 3;
+  string reason = 4;
+  string reference_id = 5; // e.g., bottling order ID
+}
+
+message RecordMovementResponse {
+  bool success = 1;
+  InventoryItem updated_item = 2;
+  string movement_id = 3;
+}

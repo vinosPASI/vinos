@@ -4,9 +4,16 @@ package stuko.api.v1.production;
 
 option go_package = "github.com/vinosPASI/vinos/backend/api/proto/v1/productionpb;productionpb";
 
+import "google/api/annotations.proto";
+
 // Maneja el proceso de embotellado, cruce de inventario de vino a granel e insumos secos y alertas de IA
 service ProductionService {
-  rpc CreateBottlingOrder(CreateBottlingOrderRequest) returns (CreateBottlingOrderResponse);
+  rpc CreateBottlingOrder(CreateBottlingOrderRequest) returns (CreateBottlingOrderResponse) {
+    option (google.api.http) = {
+      post: "/v1/production/bottling-order"
+      body: "*"
+    };
+  }
 }
 
 message CreateBottlingOrderRequest {
