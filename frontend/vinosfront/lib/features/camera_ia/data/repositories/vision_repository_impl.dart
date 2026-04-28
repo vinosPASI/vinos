@@ -14,12 +14,10 @@ class VisionRepositoryImpl implements VisionRepository {
 
   @override
   Future<AnalyzeWineLabelResponse> analyzeLabel(String fileName, Uint8List bytes) async {
-    // 1. Upload to storage bucket
     final objectReference = await _storageService.uploadFile(fileName, bytes);
 
-    // 2. Call vision API
     final response = await _dio.post(
-      '/stuko.api.v1.vision.VisionService/AnalyzeWineLabel',
+      '/v1/vision/analyze',
       data: {
         'image_reference': objectReference,
       },
