@@ -1,8 +1,11 @@
 import 'dart:typed_data';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../domain/models/inventario_models.dart';
+import '../../domain/entities/inventory_item.dart';
+import '../../domain/repositories/inventory_repository.dart';
 import '../../data/repositories/ingestion_repository_impl.dart';
 import '../../data/repositories/inventory_repository_impl.dart';
+import '../../../../shared/utils/authenticated_dio.dart';
 
 // ========================================
 // Estado y Provider para Ingesta CSV
@@ -67,8 +70,13 @@ final importCSVProvider =
   return ImportCSVNotifier(ref);
 });
 
-// Provider para detalles de un item específico
-final inventoryItemDetailProvider = FutureProvider.family<Map<String, dynamic>, String>((ref, id) async {
+
+final inventoryRepositoryProvider = Provider<InventoryRepository>((ref) {
+  final dio = ref.watch(authenticatedDioProvider);
+  return InventoryRepositoryImpl(dio);
+});
+
+final inventoryListProvider = FutureProvider.autoDispose<List<InventoryItem>>((ref) async {
   final repo = ref.watch(inventoryRepositoryProvider);
-  return repo.getInventoryItemDetail(id);
+  return await repo.getInventoryItems();
 });

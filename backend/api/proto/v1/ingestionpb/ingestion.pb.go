@@ -7,6 +7,7 @@
 package ingestionpb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -189,7 +190,7 @@ var File_api_proto_v1_ingestion_proto protoreflect.FileDescriptor
 
 const file_api_proto_v1_ingestion_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/proto/v1/ingestion.proto\x12\x16stuko.api.v1.ingestion\"b\n" +
+	"\x1capi/proto/v1/ingestion.proto\x12\x16stuko.api.v1.ingestion\x1a\x1cgoogle/api/annotations.proto\"b\n" +
 	"\x18TriggerDataImportRequest\x12%\n" +
 	"\x0efile_reference\x18\x01 \x01(\tR\rfileReference\x12\x1f\n" +
 	"\ventity_type\x18\x02 \x01(\tR\n" +
@@ -201,9 +202,9 @@ const file_api_proto_v1_ingestion_proto_rawDesc = "" +
 	"\vImportError\x12\x1d\n" +
 	"\n" +
 	"row_number\x18\x01 \x01(\x05R\trowNumber\x12#\n" +
-	"\rerror_message\x18\x02 \x01(\tR\ferrorMessage2\x8c\x01\n" +
-	"\x10IngestionService\x12x\n" +
-	"\x11TriggerDataImport\x120.stuko.api.v1.ingestion.TriggerDataImportRequest\x1a1.stuko.api.v1.ingestion.TriggerDataImportResponseBIZGgithub.com/vinosPASI/vinos/backend/api/proto/v1/ingestionpb;ingestionpbb\x06proto3"
+	"\rerror_message\x18\x02 \x01(\tR\ferrorMessage2\xae\x01\n" +
+	"\x10IngestionService\x12\x99\x01\n" +
+	"\x11TriggerDataImport\x120.stuko.api.v1.ingestion.TriggerDataImportRequest\x1a1.stuko.api.v1.ingestion.TriggerDataImportResponse\"\x1f\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/v1/ingestion/importBIZGgithub.com/vinosPASI/vinos/backend/api/proto/v1/ingestionpb;ingestionpbb\x06proto3"
 
 var (
 	file_api_proto_v1_ingestion_proto_rawDescOnce sync.Once

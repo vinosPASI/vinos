@@ -36,12 +36,12 @@ class ForecastingFeed extends ConsumerWidget {
             error: (err, stack) => Text("Error: $err"),
             data: (items) => Column(
               children: items.map((item) => _feedItem(
-                item['tag'], 
-                item['name'], 
-                item['current'], 
-                item['remaining'], 
-                item['progress'], 
-                _getColorForTag(item['tag'])
+                item.severity, 
+                item.message, 
+                "", // No current stock in alert
+                item.createdAt, 
+                item.severity == 'HIGH' ? 0.9 : 0.5, 
+                _getColorForTag(item.severity)
               )).toList(),
             ),
           ),
@@ -74,9 +74,9 @@ class ForecastingFeed extends ConsumerWidget {
     );
   }
 
-  Color _getColorForTag(String tag) {
-    if (tag.contains("CRÍTICO")) return Colors.redAccent;
-    if (tag.contains("PROBABLE")) return Colors.orangeAccent;
+  Color _getColorForTag(String severity) {
+    if (severity == "HIGH") return Colors.redAccent;
+    if (severity == "MEDIUM") return Colors.orangeAccent;
     return AppColors.winePrimary;
   }
 

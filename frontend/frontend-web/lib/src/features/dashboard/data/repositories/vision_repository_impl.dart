@@ -18,7 +18,7 @@ class VisionRepositoryImpl implements VisionRepository {
 
     // Paso 2: Llamar al VisionService para analizar la etiqueta
     final response = await _dio.post(
-      '/stuko.api.v1.vision.VisionService/AnalyzeWineLabel',
+      '/v1/vision/analyze',
       data: {
         'image_reference': objectReference,
       },

@@ -41,3 +41,16 @@ func (s *Service) Login(ctx context.Context, email, password string) (*pb.LoginR
 		Role:        role,
 	}, nil
 }
+
+// Register crea un nuevo usuario en PocketBase y retorna la respuesta proto.
+func (s *Service) Register(ctx context.Context, email, password, passwordConfirm, name string, pbRole string) (*pb.RegisterResponse, error) {
+	record, err := s.pbClient.CreateUser(email, password, passwordConfirm, name, pbRole)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "error al registrar usuario: %v", err)
+	}
+
+	return &pb.RegisterResponse{
+		UserId:  record.ID,
+		Message: "usuario registrado exitosamente",
+	}, nil
+}

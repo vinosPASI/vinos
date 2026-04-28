@@ -1,0 +1,13 @@
+name,type,quantity,unit
+Embotellado Malbec Reserva Lote-042,movimiento,2400,bottles
+Despacho Supermercado Norte Lote-038,movimiento,1200,bottles
+Ingreso Corchos Premium Proveedor CorkTech,movimiento,10000,units
+Ingreso Botellas 750ml Proveedor Verallia,movimiento,15000,units
+Embotellado Cabernet Sauvignon Lote-041,movimiento,1800,bottles
+Despacho Distribuidora Sur Lote-035,movimiento,800,bottles
+Ingreso Etiquetas Imprenta Andina,movimiento,8000,units
+Embotellado Torrontés Lote-043,movimiento,1600,bottles
+Despacho Exportación Chile Lote-039,movimiento,2000,bottles
+Ajuste Inventario - Quiebre Botellas,movimiento,-45,bottles
+Ingreso Cajas Cartón Proveedor PackWine,movimiento,3000,units
+Embotellado Bonarda Lote-044,movimiento,2200,bottles

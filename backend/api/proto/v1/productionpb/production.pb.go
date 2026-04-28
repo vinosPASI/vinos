@@ -7,6 +7,7 @@
 package productionpb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -265,7 +266,7 @@ var File_api_proto_v1_production_proto protoreflect.FileDescriptor
 
 const file_api_proto_v1_production_proto_rawDesc = "" +
 	"\n" +
-	"\x1dapi/proto/v1/production.proto\x12\x17stuko.api.v1.production\"\x9e\x01\n" +
+	"\x1dapi/proto/v1/production.proto\x12\x17stuko.api.v1.production\x1a\x1cgoogle/api/annotations.proto\"\x9e\x01\n" +
 	"\x1aCreateBottlingOrderRequest\x12\x17\n" +
 	"\awine_id\x18\x01 \x01(\tR\x06wineId\x12'\n" +
 	"\x0ftarget_quantity\x18\x02 \x01(\x05R\x0etargetQuantity\x12\x1b\n" +
@@ -283,9 +284,9 @@ const file_api_proto_v1_production_proto_rawDesc = "" +
 	"\x12quantity_to_deduct\x18\x03 \x01(\x02R\x10quantityToDeduct\"x\n" +
 	"\x14PredictiveStockAlert\x121\n" +
 	"\x14stockout_probability\x18\x01 \x01(\x02R\x13stockoutProbability\x12-\n" +
-	"\x12diagnostic_message\x18\x02 \x01(\tR\x11diagnosticMessage2\x96\x01\n" +
-	"\x11ProductionService\x12\x80\x01\n" +
-	"\x13CreateBottlingOrder\x123.stuko.api.v1.production.CreateBottlingOrderRequest\x1a4.stuko.api.v1.production.CreateBottlingOrderResponseBKZIgithub.com/vinosPASI/vinos/backend/api/proto/v1/productionpb;productionpbb\x06proto3"
+	"\x12diagnostic_message\x18\x02 \x01(\tR\x11diagnosticMessage2\xc0\x01\n" +
+	"\x11ProductionService\x12\xaa\x01\n" +
+	"\x13CreateBottlingOrder\x123.stuko.api.v1.production.CreateBottlingOrderRequest\x1a4.stuko.api.v1.production.CreateBottlingOrderResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/production/bottling-orderBKZIgithub.com/vinosPASI/vinos/backend/api/proto/v1/productionpb;productionpbb\x06proto3"
 
 var (
 	file_api_proto_v1_production_proto_rawDescOnce sync.Once

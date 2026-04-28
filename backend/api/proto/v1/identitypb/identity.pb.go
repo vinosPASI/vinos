@@ -7,6 +7,7 @@
 package identitypb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -182,25 +183,163 @@ func (x *LoginResponse) GetRole() Role {
 	return Role_ROLE_UNSPECIFIED
 }
 
+type RegisterRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Email           string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	Password        string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	PasswordConfirm string                 `protobuf:"bytes,3,opt,name=password_confirm,json=passwordConfirm,proto3" json:"password_confirm,omitempty"`
+	Name            string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Role            Role                   `protobuf:"varint,5,opt,name=role,proto3,enum=stuko.api.v1.identity.Role" json:"role,omitempty"` // Optional. If not provided, it could default to OPERATOR.
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *RegisterRequest) Reset() {
+	*x = RegisterRequest{}
+	mi := &file_api_proto_v1_identity_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RegisterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterRequest) ProtoMessage() {}
+
+func (x *RegisterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_v1_identity_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisterRequest.ProtoReflect.Descriptor instead.
+func (*RegisterRequest) Descriptor() ([]byte, []int) {
+	return file_api_proto_v1_identity_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *RegisterRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetPasswordConfirm() string {
+	if x != nil {
+		return x.PasswordConfirm
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetRole() Role {
+	if x != nil {
+		return x.Role
+	}
+	return Role_ROLE_UNSPECIFIED
+}
+
+type RegisterResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RegisterResponse) Reset() {
+	*x = RegisterResponse{}
+	mi := &file_api_proto_v1_identity_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RegisterResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterResponse) ProtoMessage() {}
+
+func (x *RegisterResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_api_proto_v1_identity_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisterResponse.ProtoReflect.Descriptor instead.
+func (*RegisterResponse) Descriptor() ([]byte, []int) {
+	return file_api_proto_v1_identity_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *RegisterResponse) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *RegisterResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_api_proto_v1_identity_proto protoreflect.FileDescriptor
 
 const file_api_proto_v1_identity_proto_rawDesc = "" +
 	"\n" +
-	"\x1bapi/proto/v1/identity.proto\x12\x15stuko.api.v1.identity\"@\n" +
+	"\x1bapi/proto/v1/identity.proto\x12\x15stuko.api.v1.identity\x1a\x1cgoogle/api/annotations.proto\"@\n" +
 	"\fLoginRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"|\n" +
 	"\rLoginResponse\x12!\n" +
 	"\faccess_token\x18\x01 \x01(\tR\vaccessToken\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12/\n" +
-	"\x04role\x18\x03 \x01(\x0e2\x1b.stuko.api.v1.identity.RoleR\x04role*?\n" +
+	"\x04role\x18\x03 \x01(\x0e2\x1b.stuko.api.v1.identity.RoleR\x04role\"\xb3\x01\n" +
+	"\x0fRegisterRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\x12)\n" +
+	"\x10password_confirm\x18\x03 \x01(\tR\x0fpasswordConfirm\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\x12/\n" +
+	"\x04role\x18\x05 \x01(\x0e2\x1b.stuko.api.v1.identity.RoleR\x04role\"E\n" +
+	"\x10RegisterResponse\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage*?\n" +
 	"\x04Role\x12\x14\n" +
 	"\x10ROLE_UNSPECIFIED\x10\x00\x12\x0e\n" +
 	"\n" +
 	"ROLE_ADMIN\x10\x01\x12\x11\n" +
-	"\rROLE_OPERATOR\x10\x022e\n" +
-	"\x0fIdentityService\x12R\n" +
-	"\x05Login\x12#.stuko.api.v1.identity.LoginRequest\x1a$.stuko.api.v1.identity.LoginResponseBGZEgithub.com/vinosPASI/vinos/backend/api/proto/v1/identitypb;identitypbb\x06proto3"
+	"\rROLE_OPERATOR\x10\x022\x83\x02\n" +
+	"\x0fIdentityService\x12q\n" +
+	"\x05Login\x12#.stuko.api.v1.identity.LoginRequest\x1a$.stuko.api.v1.identity.LoginResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/v1/identity/login\x12}\n" +
+	"\bRegister\x12&.stuko.api.v1.identity.RegisterRequest\x1a'.stuko.api.v1.identity.RegisterResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/identity/registerBGZEgithub.com/vinosPASI/vinos/backend/api/proto/v1/identitypb;identitypbb\x06proto3"
 
 var (
 	file_api_proto_v1_identity_proto_rawDescOnce sync.Once
@@ -215,21 +354,26 @@ func file_api_proto_v1_identity_proto_rawDescGZIP() []byte {
 }
 
 var file_api_proto_v1_identity_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_api_proto_v1_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_api_proto_v1_identity_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_api_proto_v1_identity_proto_goTypes = []any{
-	(Role)(0),             // 0: stuko.api.v1.identity.Role
-	(*LoginRequest)(nil),  // 1: stuko.api.v1.identity.LoginRequest
-	(*LoginResponse)(nil), // 2: stuko.api.v1.identity.LoginResponse
+	(Role)(0),                // 0: stuko.api.v1.identity.Role
+	(*LoginRequest)(nil),     // 1: stuko.api.v1.identity.LoginRequest
+	(*LoginResponse)(nil),    // 2: stuko.api.v1.identity.LoginResponse
+	(*RegisterRequest)(nil),  // 3: stuko.api.v1.identity.RegisterRequest
+	(*RegisterResponse)(nil), // 4: stuko.api.v1.identity.RegisterResponse
 }
 var file_api_proto_v1_identity_proto_depIdxs = []int32{
 	0, // 0: stuko.api.v1.identity.LoginResponse.role:type_name -> stuko.api.v1.identity.Role
-	1, // 1: stuko.api.v1.identity.IdentityService.Login:input_type -> stuko.api.v1.identity.LoginRequest
-	2, // 2: stuko.api.v1.identity.IdentityService.Login:output_type -> stuko.api.v1.identity.LoginResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // 1: stuko.api.v1.identity.RegisterRequest.role:type_name -> stuko.api.v1.identity.Role
+	1, // 2: stuko.api.v1.identity.IdentityService.Login:input_type -> stuko.api.v1.identity.LoginRequest
+	3, // 3: stuko.api.v1.identity.IdentityService.Register:input_type -> stuko.api.v1.identity.RegisterRequest
+	2, // 4: stuko.api.v1.identity.IdentityService.Login:output_type -> stuko.api.v1.identity.LoginResponse
+	4, // 5: stuko.api.v1.identity.IdentityService.Register:output_type -> stuko.api.v1.identity.RegisterResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_api_proto_v1_identity_proto_init() }
@@ -243,7 +387,7 @@ func file_api_proto_v1_identity_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_api_proto_v1_identity_proto_rawDesc), len(file_api_proto_v1_identity_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

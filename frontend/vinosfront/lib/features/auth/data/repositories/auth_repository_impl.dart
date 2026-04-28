@@ -12,7 +12,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<UserResponse> login(String email, String password) async {
     final response = await _dio.post(
-      '/stuko.api.v1.identity.IdentityService/Login',
+      '/v1/identity/login',
       data: {
         'email': email,
         'password': password,
@@ -23,6 +23,24 @@ class AuthRepositoryImpl implements AuthRepository {
       return UserResponse.fromJson(response.data);
     } else {
       throw Exception('Error en autenticación: ${response.statusMessage}');
+    }
+  }
+
+  @override
+  Future<UserResponse> register(String email, String password, String name) async {
+    final response = await _dio.post(
+      '/v1/identity/register',
+      data: {
+        'email': email,
+        'password': password,
+        'name': name,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return UserResponse.fromJson(response.data);
+    } else {
+      throw Exception('Error en registro: ${response.statusMessage}');
     }
   }
 }

@@ -30,18 +30,15 @@ static_resources:
                 allow_headers: "authorization, content-type, x-requested-with, grpc-timeout"
                 expose_headers: "grpc-status, grpc-message"
               routes:
-              # ── Rutas HTTP directas (storage upload, no necesitan transcoding) ──
               - match:
                   prefix: "/v1/storage/"
                 route:
                   cluster: backend_http
                   timeout: 60s
-              # ── Health check ──
               - match:
                   prefix: "/healthz"
                 route:
                   cluster: backend_http
-              # ── Todas las demás rutas pasan por gRPC transcoding ──
               - match:
                   prefix: "/"
                 route:

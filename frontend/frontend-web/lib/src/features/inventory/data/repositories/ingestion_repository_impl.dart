@@ -18,7 +18,7 @@ class IngestionRepositoryImpl implements IngestionRepository {
 
     // Paso 2: Disparar la ingesta con la referencia del archivo
     final response = await _dio.post(
-      '/stuko.api.v1.ingestion.IngestionService/TriggerDataImport',
+      '/v1/ingestion/import',
       data: {
         'file_reference': objectReference,
         'entity_type': entityType,
