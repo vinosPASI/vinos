@@ -46,20 +46,10 @@ service InventoryService {
   }
 }
 
-message InventoryItem {
-  string id = 1;
-  string name = 2;
-  string type = 3; // "wine", "material", "packaging", etc.
-  int32 quantity = 4;
-  string unit = 5; // "liters", "units", "boxes", etc.
-  string created_at = 6;
-  string updated_at = 7;
-}
-
 message ListInventoryItemsRequest {
   int32 page = 1;
   int32 limit = 2;
-  string filter = 3; // Optional filter string
+  string filter = 3;
 }
 
 message ListInventoryItemsResponse {
@@ -72,8 +62,39 @@ message GetInventoryItemRequest {
   string id = 1;
 }
 
+message InventoryItem {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  int32 quantity = 4;
+  string unit = 5;
+  string sku = 6;
+  int32 real_stock = 7;
+  int32 net_stock = 8;
+  string warehouse = 9;
+  string created_at = 10;
+  string updated_at = 11;
+}
+
+message Movement {
+  string date = 1;
+  string type = 2;
+  string reference = 3;
+  int32 quantity = 4;
+}
+
+message StockPoint {
+  float x = 1;
+  float y = 2;
+}
+
 message GetInventoryItemResponse {
   InventoryItem item = 1;
+  // Detail fields for dashboard projections
+  int32 runway_days = 2;
+  string stockout_date = 3;
+  repeated StockPoint consumption_history = 4;
+  repeated Movement movement_history = 5;
 }
 
 message CreateInventoryItemRequest {
@@ -81,6 +102,8 @@ message CreateInventoryItemRequest {
   string type = 2;
   int32 quantity = 3;
   string unit = 4;
+  string sku = 5;
+  string warehouse = 6;
 }
 
 message CreateInventoryItemResponse {
@@ -93,6 +116,8 @@ message UpdateInventoryItemRequest {
   string type = 3;
   int32 quantity = 4;
   string unit = 5;
+  string sku = 6;
+  string warehouse = 7;
 }
 
 message UpdateInventoryItemResponse {
@@ -109,10 +134,10 @@ message DeleteInventoryItemResponse {
 
 message RecordMovementRequest {
   string item_id = 1;
-  string movement_type = 2; // "IN" or "OUT"
+  string movement_type = 2; // IN or OUT
   int32 quantity = 3;
   string reason = 4;
-  string reference_id = 5; // e.g., bottling order ID
+  string reference_id = 5;
 }
 
 message RecordMovementResponse {
@@ -120,3 +145,4 @@ message RecordMovementResponse {
   InventoryItem updated_item = 2;
   string movement_id = 3;
 }
+

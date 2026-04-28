@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:flutter/foundation.dart';
 class DioClient {
-  static const String baseUrl = 'https://winery-api.stuko.dev';
+  static const String baseUrl = 'http://localhost:8080';
   
   final Dio _dio = Dio(
     BaseOptions(

@@ -253,13 +253,14 @@ func (c *PocketBaseClient) CreateRecord(collection string, data interface{}) ([]
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent && resp.StatusCode != http.StatusCreated {
 		bodyBytes, _ := io.ReadAll(resp.Body)
 		return nil, fmt.Errorf("error creando registro, status: %d, response: %s", resp.StatusCode, string(bodyBytes))
 	}
 
 	return io.ReadAll(resp.Body)
 }
+
 
 // UpdateRecord actualiza un registro existente.
 func (c *PocketBaseClient) UpdateRecord(collection, id string, data interface{}) ([]byte, error) {

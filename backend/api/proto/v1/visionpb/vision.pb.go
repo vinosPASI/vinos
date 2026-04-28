@@ -7,6 +7,7 @@
 package visionpb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -249,7 +250,7 @@ var File_api_proto_v1_vision_proto protoreflect.FileDescriptor
 
 const file_api_proto_v1_vision_proto_rawDesc = "" +
 	"\n" +
-	"\x19api/proto/v1/vision.proto\x12\x13stuko.api.v1.vision\"B\n" +
+	"\x19api/proto/v1/vision.proto\x12\x13stuko.api.v1.vision\x1a\x1cgoogle/api/annotations.proto\"B\n" +
 	"\x17AnalyzeWineLabelRequest\x12'\n" +
 	"\x0fimage_reference\x18\x01 \x01(\tR\x0eimageReference\"\xd4\x01\n" +
 	"\x18AnalyzeWineLabelResponse\x12 \n" +
@@ -264,9 +265,9 @@ const file_api_proto_v1_vision_proto_rawDesc = "" +
 	"\x05brand\x18\x01 \x01(\tR\x05brand\x12#\n" +
 	"\rcepa_variedad\x18\x02 \x01(\tR\fcepaVariedad\x12!\n" +
 	"\fvintage_year\x18\x03 \x01(\x05R\vvintageYear\x12%\n" +
-	"\x0evolume_content\x18\x04 \x01(\tR\rvolumeContent2\x80\x01\n" +
-	"\rVisionService\x12o\n" +
-	"\x10AnalyzeWineLabel\x12,.stuko.api.v1.vision.AnalyzeWineLabelRequest\x1a-.stuko.api.v1.vision.AnalyzeWineLabelResponseBCZAgithub.com/vinosPASI/vinos/backend/api/proto/v1/visionpb;visionpbb\x06proto3"
+	"\x0evolume_content\x18\x04 \x01(\tR\rvolumeContent2\xa0\x01\n" +
+	"\rVisionService\x12\x8e\x01\n" +
+	"\x10AnalyzeWineLabel\x12,.stuko.api.v1.vision.AnalyzeWineLabelRequest\x1a-.stuko.api.v1.vision.AnalyzeWineLabelResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/v1/vision/analyzeBCZAgithub.com/vinosPASI/vinos/backend/api/proto/v1/visionpb;visionpbb\x06proto3"
 
 var (
 	file_api_proto_v1_vision_proto_rawDescOnce sync.Once

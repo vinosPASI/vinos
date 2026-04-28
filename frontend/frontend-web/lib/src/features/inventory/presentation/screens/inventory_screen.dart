@@ -425,10 +425,12 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
               headingRowColor: WidgetStateProperty.all(AppColors.cream.withOpacity(0.5)),
               columns: const [
                 DataColumn(label: Text("STATUS", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-                DataColumn(label: Text("NOMBRE", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                DataColumn(label: Text("PRODUCTO / SKU", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
                 DataColumn(label: Text("TIPO", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-                DataColumn(label: Text("CANTIDAD", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
-                DataColumn(label: Text("UNIDAD", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                DataColumn(label: Text("STOCK", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                DataColumn(label: Text("REAL", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                DataColumn(label: Text("NETO", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
+                DataColumn(label: Text("ALMACÉN", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
               ],
               rows: displayList.map((item) => DataRow(
             cells: [
@@ -442,7 +444,16 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   child: Text(_getStatusLabel(item.status), style: TextStyle(color: _getStatusColor(item.status), fontSize: 11, fontWeight: FontWeight.bold)),
                 ),
               ),
-              DataCell(Text(item.name, style: const TextStyle(color: AppColors.wineSecondary, fontWeight: FontWeight.bold, fontSize: 13))),
+              DataCell(
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.name, style: const TextStyle(color: AppColors.wineSecondary, fontWeight: FontWeight.bold, fontSize: 13)),
+                    Text(item.sku.isEmpty ? 'SIN SKU' : item.sku, style: TextStyle(color: Colors.grey[500], fontSize: 10, letterSpacing: 0.5)),
+                  ],
+                ),
+              ),
               DataCell(
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -453,18 +464,26 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                   child: Text(item.typeLabel, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
                 ),
               ),
-              DataCell(Text(
-                item.quantity.toString(),
-                style: TextStyle(
-                  color: item.quantity <= 100 ? Colors.redAccent : AppColors.wineSecondary,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                ),
+              DataCell(Row(
+                children: [
+                  Text(
+                    item.quantity.toString(),
+                    style: TextStyle(
+                      color: item.quantity <= 100 ? Colors.redAccent : AppColors.wineSecondary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(item.unit, style: TextStyle(color: Colors.grey[500], fontSize: 11)),
+                ],
               )),
-              DataCell(Text(item.unit, style: TextStyle(color: Colors.grey[600], fontSize: 13))),
+              DataCell(Text(item.realStock.toString(), style: const TextStyle(fontSize: 13))),
+              DataCell(Text(item.netStock.toString(), style: const TextStyle(fontSize: 13))),
+              DataCell(Text(item.warehouse.isEmpty ? '-' : item.warehouse, style: TextStyle(color: Colors.grey[600], fontSize: 13))),
             ],
           )).toList(),
-        ),
+        ],
       ),
     );
       },

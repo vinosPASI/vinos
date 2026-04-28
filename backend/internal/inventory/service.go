@@ -31,13 +31,17 @@ type pbListResponse struct {
 
 // InventoryItem representa el modelo interno para PocketBase
 type InventoryItem struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Type     string `json:"type"`
-	Quantity int    `json:"quantity"`
-	Unit     string `json:"unit"`
-	Created  string `json:"created"`
-	Updated  string `json:"updated"`
+	ID        string  `json:"id"`
+	Name      string  `json:"name"`
+	Type      string  `json:"type"`
+	Quantity  int     `json:"quantity"`
+	Unit      string  `json:"unit"`
+	SKU       string  `json:"sku"`
+	RealStock float64 `json:"real_stock"`
+	NetStock  float64 `json:"net_stock"`
+	Warehouse string  `json:"warehouse"`
+	Created   string  `json:"created"`
+	Updated   string  `json:"updated"`
 }
 
 // mapearItem convierte el modelo de PocketBase al mensaje gRPC
@@ -48,6 +52,10 @@ func mapearItem(item InventoryItem) *pb.InventoryItem {
 		Type:      item.Type,
 		Quantity:  int32(item.Quantity),
 		Unit:      item.Unit,
+		Sku:       item.SKU,
+		RealStock: int32(item.RealStock),
+		NetStock:  int32(item.NetStock),
+		Warehouse: item.Warehouse,
 		CreatedAt: item.Created,
 		UpdatedAt: item.Updated,
 	}
@@ -101,10 +109,14 @@ func (s *Service) GetInventoryItem(ctx context.Context, id string) (*pb.GetInven
 
 func (s *Service) CreateInventoryItem(ctx context.Context, req *pb.CreateInventoryItemRequest) (*pb.CreateInventoryItemResponse, error) {
 	payload := map[string]interface{}{
-		"name":     req.Name,
-		"type":     req.Type,
-		"quantity": req.Quantity,
-		"unit":     req.Unit,
+		"name":       req.Name,
+		"type":       req.Type,
+		"quantity":   req.Quantity,
+		"unit":       req.Unit,
+		"sku":        req.Sku,
+		"warehouse":  req.Warehouse,
+		"real_stock": req.Quantity, // Por defecto igual a quantity al crear
+		"net_stock":  req.Quantity,
 	}
 
 	data, err := s.pbClient.CreateRecord("inventory", payload)
@@ -124,10 +136,12 @@ func (s *Service) CreateInventoryItem(ctx context.Context, req *pb.CreateInvento
 
 func (s *Service) UpdateInventoryItem(ctx context.Context, req *pb.UpdateInventoryItemRequest) (*pb.UpdateInventoryItemResponse, error) {
 	payload := map[string]interface{}{
-		"name":     req.Name,
-		"type":     req.Type,
-		"quantity": req.Quantity,
-		"unit":     req.Unit,
+		"name":      req.Name,
+		"type":      req.Type,
+		"quantity":  req.Quantity,
+		"unit":      req.Unit,
+		"sku":       req.Sku,
+		"warehouse": req.Warehouse,
 	}
 
 	data, err := s.pbClient.UpdateRecord("inventory", req.Id, payload)

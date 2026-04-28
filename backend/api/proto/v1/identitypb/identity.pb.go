@@ -7,6 +7,7 @@
 package identitypb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -314,7 +315,7 @@ var File_api_proto_v1_identity_proto protoreflect.FileDescriptor
 
 const file_api_proto_v1_identity_proto_rawDesc = "" +
 	"\n" +
-	"\x1bapi/proto/v1/identity.proto\x12\x15stuko.api.v1.identity\"@\n" +
+	"\x1bapi/proto/v1/identity.proto\x12\x15stuko.api.v1.identity\x1a\x1cgoogle/api/annotations.proto\"@\n" +
 	"\fLoginRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"|\n" +
@@ -335,10 +336,10 @@ const file_api_proto_v1_identity_proto_rawDesc = "" +
 	"\x10ROLE_UNSPECIFIED\x10\x00\x12\x0e\n" +
 	"\n" +
 	"ROLE_ADMIN\x10\x01\x12\x11\n" +
-	"\rROLE_OPERATOR\x10\x022\xc2\x01\n" +
-	"\x0fIdentityService\x12R\n" +
-	"\x05Login\x12#.stuko.api.v1.identity.LoginRequest\x1a$.stuko.api.v1.identity.LoginResponse\x12[\n" +
-	"\bRegister\x12&.stuko.api.v1.identity.RegisterRequest\x1a'.stuko.api.v1.identity.RegisterResponseBGZEgithub.com/vinosPASI/vinos/backend/api/proto/v1/identitypb;identitypbb\x06proto3"
+	"\rROLE_OPERATOR\x10\x022\x83\x02\n" +
+	"\x0fIdentityService\x12q\n" +
+	"\x05Login\x12#.stuko.api.v1.identity.LoginRequest\x1a$.stuko.api.v1.identity.LoginResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/v1/identity/login\x12}\n" +
+	"\bRegister\x12&.stuko.api.v1.identity.RegisterRequest\x1a'.stuko.api.v1.identity.RegisterResponse\" \x82\xd3\xe4\x93\x02\x1a:\x01*\"\x15/v1/identity/registerBGZEgithub.com/vinosPASI/vinos/backend/api/proto/v1/identitypb;identitypbb\x06proto3"
 
 var (
 	file_api_proto_v1_identity_proto_rawDescOnce sync.Once

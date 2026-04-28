@@ -7,6 +7,7 @@
 package dashboardpb
 
 import (
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -573,7 +574,7 @@ var File_api_proto_v1_dashboard_proto protoreflect.FileDescriptor
 
 const file_api_proto_v1_dashboard_proto_rawDesc = "" +
 	"\n" +
-	"\x1capi/proto/v1/dashboard.proto\x12\x16stuko.api.v1.dashboard\"\x1a\n" +
+	"\x1capi/proto/v1/dashboard.proto\x12\x16stuko.api.v1.dashboard\x1a\x1cgoogle/api/annotations.proto\"\x1a\n" +
 	"\x18GetDashboardStatsRequest\"\xb3\x01\n" +
 	"\x19GetDashboardStatsResponse\x12#\n" +
 	"\rtotal_bottles\x18\x01 \x01(\x05R\ftotalBottles\x12\x1f\n" +
@@ -609,12 +610,12 @@ const file_api_proto_v1_dashboard_proto_rawDesc = "" +
 	"\bseverity\x18\x03 \x01(\tR\bseverity\x12\x1d\n" +
 	"\n" +
 	"created_at\x18\x04 \x01(\tR\tcreatedAt\x12&\n" +
-	"\x0frelated_item_id\x18\x05 \x01(\tR\rrelatedItemId2\x87\x04\n" +
-	"\x10DashboardService\x12x\n" +
-	"\x11GetDashboardStats\x120.stuko.api.v1.dashboard.GetDashboardStatsRequest\x1a1.stuko.api.v1.dashboard.GetDashboardStatsResponse\x12\x81\x01\n" +
-	"\x14GetHighValueHoldings\x123.stuko.api.v1.dashboard.GetHighValueHoldingsRequest\x1a4.stuko.api.v1.dashboard.GetHighValueHoldingsResponse\x12x\n" +
-	"\x11GetMarketExposure\x120.stuko.api.v1.dashboard.GetMarketExposureRequest\x1a1.stuko.api.v1.dashboard.GetMarketExposureResponse\x12{\n" +
-	"\x12GetForecastingFeed\x121.stuko.api.v1.dashboard.GetForecastingFeedRequest\x1a2.stuko.api.v1.dashboard.GetForecastingFeedResponseBIZGgithub.com/vinosPASI/vinos/backend/api/proto/v1/dashboardpb;dashboardpbb\x06proto3"
+	"\x0frelated_item_id\x18\x05 \x01(\tR\rrelatedItemId2\xaa\x05\n" +
+	"\x10DashboardService\x12\x95\x01\n" +
+	"\x11GetDashboardStats\x120.stuko.api.v1.dashboard.GetDashboardStatsRequest\x1a1.stuko.api.v1.dashboard.GetDashboardStatsResponse\"\x1b\x82\xd3\xe4\x93\x02\x15\x12\x13/v1/dashboard/stats\x12\xaf\x01\n" +
+	"\x14GetHighValueHoldings\x123.stuko.api.v1.dashboard.GetHighValueHoldingsRequest\x1a4.stuko.api.v1.dashboard.GetHighValueHoldingsResponse\",\x82\xd3\xe4\x93\x02&:\x01*\"!/v1/dashboard/high-value-holdings\x12\xa2\x01\n" +
+	"\x11GetMarketExposure\x120.stuko.api.v1.dashboard.GetMarketExposureRequest\x1a1.stuko.api.v1.dashboard.GetMarketExposureResponse\"(\x82\xd3\xe4\x93\x02\":\x01*\"\x1d/v1/dashboard/market-exposure\x12\xa6\x01\n" +
+	"\x12GetForecastingFeed\x121.stuko.api.v1.dashboard.GetForecastingFeedRequest\x1a2.stuko.api.v1.dashboard.GetForecastingFeedResponse\")\x82\xd3\xe4\x93\x02#:\x01*\"\x1e/v1/dashboard/forecasting-feedBIZGgithub.com/vinosPASI/vinos/backend/api/proto/v1/dashboardpb;dashboardpbb\x06proto3"
 
 var (
 	file_api_proto_v1_dashboard_proto_rawDescOnce sync.Once

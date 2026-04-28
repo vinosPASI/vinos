@@ -85,8 +85,8 @@ func main() {
 	ingestionpb.RegisterIngestionServiceServer(grpcServer, ingestion.NewHandler(pbClient, minioAdapter))
 	visionpb.RegisterVisionServiceServer(grpcServer, vision.NewHandler(minioAdapter))
 	productionpb.RegisterProductionServiceServer(grpcServer, production.NewHandler())
-	inventorypb.RegisterInventoryServiceServer(grpcServer, inventory.NewHandler(pbClient))
 	dashboardpb.RegisterDashboardServiceServer(grpcServer, dashboard.NewHandler(pbClient))
+	inventorypb.RegisterInventoryServiceServer(grpcServer, inventory.NewHandler(pbClient))
 
 	// Reflection para herramientas como grpcurl
 	reflection.Register(grpcServer)
