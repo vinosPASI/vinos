@@ -71,6 +71,7 @@ type AnalyzeWineLabelResponse struct {
 	RawOcrText     string                 `protobuf:"bytes,1,opt,name=raw_ocr_text,json=rawOcrText,proto3" json:"raw_ocr_text,omitempty"`
 	Classification *ImageClassification   `protobuf:"bytes,2,opt,name=classification,proto3" json:"classification,omitempty"`
 	WineData       *StructuredWineData    `protobuf:"bytes,3,opt,name=wine_data,json=wineData,proto3" json:"wine_data,omitempty"`
+	SommelierNote  string                 `protobuf:"bytes,4,opt,name=sommelier_note,json=sommelierNote,proto3" json:"sommelier_note,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -124,6 +125,13 @@ func (x *AnalyzeWineLabelResponse) GetWineData() *StructuredWineData {
 		return x.WineData
 	}
 	return nil
+}
+
+func (x *AnalyzeWineLabelResponse) GetSommelierNote() string {
+	if x != nil {
+		return x.SommelierNote
+	}
+	return ""
 }
 
 type ImageClassification struct {
@@ -184,6 +192,8 @@ type StructuredWineData struct {
 	CepaVariedad  string                 `protobuf:"bytes,2,opt,name=cepa_variedad,json=cepaVariedad,proto3" json:"cepa_variedad,omitempty"`
 	VintageYear   int32                  `protobuf:"varint,3,opt,name=vintage_year,json=vintageYear,proto3" json:"vintage_year,omitempty"`
 	VolumeContent string                 `protobuf:"bytes,4,opt,name=volume_content,json=volumeContent,proto3" json:"volume_content,omitempty"`
+	Sku           string                 `protobuf:"bytes,5,opt,name=sku,proto3" json:"sku,omitempty"`
+	Warehouse     string                 `protobuf:"bytes,6,opt,name=warehouse,proto3" json:"warehouse,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -246,26 +256,43 @@ func (x *StructuredWineData) GetVolumeContent() string {
 	return ""
 }
 
+func (x *StructuredWineData) GetSku() string {
+	if x != nil {
+		return x.Sku
+	}
+	return ""
+}
+
+func (x *StructuredWineData) GetWarehouse() string {
+	if x != nil {
+		return x.Warehouse
+	}
+	return ""
+}
+
 var File_api_proto_v1_vision_proto protoreflect.FileDescriptor
 
 const file_api_proto_v1_vision_proto_rawDesc = "" +
 	"\n" +
 	"\x19api/proto/v1/vision.proto\x12\x13stuko.api.v1.vision\x1a\x1cgoogle/api/annotations.proto\"B\n" +
 	"\x17AnalyzeWineLabelRequest\x12'\n" +
-	"\x0fimage_reference\x18\x01 \x01(\tR\x0eimageReference\"\xd4\x01\n" +
+	"\x0fimage_reference\x18\x01 \x01(\tR\x0eimageReference\"\xfb\x01\n" +
 	"\x18AnalyzeWineLabelResponse\x12 \n" +
 	"\fraw_ocr_text\x18\x01 \x01(\tR\n" +
 	"rawOcrText\x12P\n" +
 	"\x0eclassification\x18\x02 \x01(\v2(.stuko.api.v1.vision.ImageClassificationR\x0eclassification\x12D\n" +
-	"\twine_data\x18\x03 \x01(\v2'.stuko.api.v1.vision.StructuredWineDataR\bwineData\"V\n" +
+	"\twine_data\x18\x03 \x01(\v2'.stuko.api.v1.vision.StructuredWineDataR\bwineData\x12%\n" +
+	"\x0esommelier_note\x18\x04 \x01(\tR\rsommelierNote\"V\n" +
 	"\x13ImageClassification\x12\x14\n" +
 	"\x05label\x18\x01 \x01(\tR\x05label\x12)\n" +
-	"\x10confidence_level\x18\x02 \x01(\x02R\x0fconfidenceLevel\"\x99\x01\n" +
+	"\x10confidence_level\x18\x02 \x01(\x02R\x0fconfidenceLevel\"\xc9\x01\n" +
 	"\x12StructuredWineData\x12\x14\n" +
 	"\x05brand\x18\x01 \x01(\tR\x05brand\x12#\n" +
 	"\rcepa_variedad\x18\x02 \x01(\tR\fcepaVariedad\x12!\n" +
 	"\fvintage_year\x18\x03 \x01(\x05R\vvintageYear\x12%\n" +
-	"\x0evolume_content\x18\x04 \x01(\tR\rvolumeContent2\xa0\x01\n" +
+	"\x0evolume_content\x18\x04 \x01(\tR\rvolumeContent\x12\x10\n" +
+	"\x03sku\x18\x05 \x01(\tR\x03sku\x12\x1c\n" +
+	"\twarehouse\x18\x06 \x01(\tR\twarehouse2\xa0\x01\n" +
 	"\rVisionService\x12\x8e\x01\n" +
 	"\x10AnalyzeWineLabel\x12,.stuko.api.v1.vision.AnalyzeWineLabelRequest\x1a-.stuko.api.v1.vision.AnalyzeWineLabelResponse\"\x1d\x82\xd3\xe4\x93\x02\x17:\x01*\"\x12/v1/vision/analyzeBCZAgithub.com/vinosPASI/vinos/backend/api/proto/v1/visionpb;visionpbb\x06proto3"
 

@@ -28,4 +28,20 @@ class InventoryRepositoryImpl implements InventoryRepository {
       throw Exception('Error de red al traer inventario: $message');
     }
   }
+
+  @override
+  Future<Map<String, dynamic>> getInventoryItemDetail(String id) async {
+    try {
+      final response = await _dio.get('/v1/inventory/$id');
+
+      if (response.statusCode == 200) {
+        return response.data as Map<String, dynamic>;
+      } else {
+        throw Exception('Error al obtener detalle del item: ${response.statusMessage}');
+      }
+    } on DioException catch (e) {
+      final String message = e.response?.data['message'] ?? e.message;
+      throw Exception('Error de red al traer detalle: $message');
+    }
+  }
 }

@@ -433,59 +433,62 @@ class _InventoryScreenState extends ConsumerState<InventoryScreen> {
                 DataColumn(label: Text("ALMACÉN", style: TextStyle(color: AppColors.wineSecondary, fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 1))),
               ],
               rows: displayList.map((item) => DataRow(
-            cells: [
-              DataCell(
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _getStatusColor(item.status).withOpacity(0.15),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(_getStatusLabel(item.status), style: TextStyle(color: _getStatusColor(item.status), fontSize: 11, fontWeight: FontWeight.bold)),
-                ),
-              ),
-              DataCell(
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(item.name, style: const TextStyle(color: AppColors.wineSecondary, fontWeight: FontWeight.bold, fontSize: 13)),
-                    Text(item.sku.isEmpty ? 'SIN SKU' : item.sku, style: TextStyle(color: Colors.grey[500], fontSize: 10, letterSpacing: 0.5)),
-                  ],
-                ),
-              ),
-              DataCell(
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: AppColors.sand.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(item.typeLabel, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
-                ),
-              ),
-              DataCell(Row(
-                children: [
-                  Text(
-                    item.quantity.toString(),
-                    style: TextStyle(
-                      color: item.quantity <= 100 ? Colors.redAccent : AppColors.wineSecondary,
-                      fontSize: 13,
-                      fontWeight: FontWeight.bold,
+                onSelectChanged: (_) {
+                  context.go('/inventory/${item.id}', extra: item.name);
+                },
+                cells: [
+                  DataCell(
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: _getStatusColor(item.status).withOpacity(0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(_getStatusLabel(item.status), style: TextStyle(color: _getStatusColor(item.status), fontSize: 11, fontWeight: FontWeight.bold)),
                     ),
                   ),
-                  const SizedBox(width: 4),
-                  Text(item.unit, style: TextStyle(color: Colors.grey[500], fontSize: 11)),
+                  DataCell(
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(item.name, style: const TextStyle(color: AppColors.wineSecondary, fontWeight: FontWeight.bold, fontSize: 13)),
+                        Text(item.sku.isEmpty ? 'SIN SKU' : item.sku, style: TextStyle(color: Colors.grey[500], fontSize: 10, letterSpacing: 0.5)),
+                      ],
+                    ),
+                  ),
+                  DataCell(
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.sand.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(item.typeLabel, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w500)),
+                    ),
+                  ),
+                  DataCell(Row(
+                    children: [
+                      Text(
+                        item.quantity.toString(),
+                        style: TextStyle(
+                          color: item.quantity <= 100 ? Colors.redAccent : AppColors.wineSecondary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(item.unit, style: TextStyle(color: Colors.grey[500], fontSize: 11)),
+                    ],
+                  )),
+                  DataCell(Text(item.realStock.toString(), style: const TextStyle(fontSize: 13))),
+                  DataCell(Text(item.netStock.toString(), style: const TextStyle(fontSize: 13))),
+                  DataCell(Text(item.warehouse.isEmpty ? '-' : item.warehouse, style: TextStyle(color: Colors.grey[600], fontSize: 13))),
                 ],
-              )),
-              DataCell(Text(item.realStock.toString(), style: const TextStyle(fontSize: 13))),
-              DataCell(Text(item.netStock.toString(), style: const TextStyle(fontSize: 13))),
-              DataCell(Text(item.warehouse.isEmpty ? '-' : item.warehouse, style: TextStyle(color: Colors.grey[600], fontSize: 13))),
-            ],
-          )).toList(),
-        ],
-      ),
-    );
+              )).toList(),
+            ),
+          ),
+        );
       },
       loading: () => const Center(child: Padding(
         padding: EdgeInsets.all(40.0),

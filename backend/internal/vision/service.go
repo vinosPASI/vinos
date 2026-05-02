@@ -8,6 +8,9 @@ import (
 
 	pb "github.com/vinosPASI/vinos/backend/api/proto/v1/visionpb"
 	"github.com/vinosPASI/vinos/backend/internal/storage"
+	"github.com/vinosPASI/vinos/backend/pkg/logger"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Service struct {
@@ -15,10 +18,10 @@ type Service struct {
 	mlClient     *MLClient
 }
 
-func NewService(minioAdapter *storage.MinIOAdapter, lmEndpoint string) *Service {
+func NewService(minioAdapter *storage.MinIOAdapter, lmEndpoint string, filterEndpoint string) *Service {
 	return &Service{
 		minioAdapter: minioAdapter,
-		mlClient:     NewMLClient(lmEndpoint),
+		mlClient:     NewMLClient(lmEndpoint, filterEndpoint),
 	}
 }
 
@@ -40,10 +43,26 @@ func (s *Service) AnalyzeLabel(ctx context.Context, imageReference string) (*pb.
 
 	labelData, err := s.mlClient.AnalyzeLabel(base64Image)
 	if err != nil {
-		return nil, fmt.Errorf("error analizando imagen con OCR: %w", err)
+		errMsg := err.Error()
+		if strings.Contains(errMsg, "la imagen no es apta") || strings.Contains(errMsg, "no detectó texto") {
+			return nil, status.Errorf(codes.InvalidArgument, "%s", errMsg)
+		}
+		return nil, status.Errorf(codes.Internal, "error analizando imagen: %v", err)
 	}
+
+	logger.Info("Data estructurada extraída",
+		"brand", labelData.Brand,
+		"variety", labelData.CepaVariedad,
+		"year", labelData.VintageYear,
+		"volume", labelData.VolumeContent,
+	)
+	var sommelierNote string
+	if labelData.Brand != "" && labelData.Brand != "N/A" {
+		sommelierNote = s.mlClient.GetSommelierRecommendation(labelData.Brand, labelData.CepaVariedad)
+	}
+
 	return &pb.AnalyzeWineLabelResponse{
-		RawOcrText: "Procesado por LM Studio",
+		RawOcrText: labelData.Brand + " " + labelData.CepaVariedad + " (" + labelData.VolumeContent + ")",
 		Classification: &pb.ImageClassification{
 			Label:           "wine_label",
 			ConfidenceLevel: 0.95,
@@ -53,6 +72,9 @@ func (s *Service) AnalyzeLabel(ctx context.Context, imageReference string) (*pb.
 			CepaVariedad:  labelData.CepaVariedad,
 			VintageYear:   labelData.VintageYear,
 			VolumeContent: labelData.VolumeContent,
+			Sku:           labelData.Sku,
+			Warehouse:     labelData.Warehouse,
 		},
+		SommelierNote: sommelierNote,
 	}, nil
 }

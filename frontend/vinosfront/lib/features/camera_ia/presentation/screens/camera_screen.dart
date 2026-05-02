@@ -93,18 +93,41 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
           type: _ChatBubbleType.bot,
           text: "💡 ¡Análisis completado!\n\n"
               "🏷️ Marca: ${result.wineData.brand}\n"
-              "🍇 Cepa: ${result.wineData.cepaVariedad}\n"
-              "📅 Año: ${result.wineData.vintageYear}\n"
+              "🍇 Variedad: ${result.wineData.cepaVariedad}\n"
+              "📅 Año: ${result.wineData.vintageYear > 0 ? result.wineData.vintageYear : 'N/A'}\n"
               "📏 Volumen: ${result.wineData.volumeContent}",
         ));
+        
+        if (result.sommelierNote.isNotEmpty) {
+          _messages.add(_ChatMessage(
+            type: _ChatBubbleType.bot,
+            text: "🍷 Recomendación del Sommelier:\n\n${result.sommelierNote}",
+          ));
+        }
+
         _isAnalyzing = false;
       });
     } catch (e) {
+      String userFriendlyError = e.toString();
+      
+      // Intentar extraer el mensaje de error del backend si es una respuesta controlada
+      if (e is dynamic && e.runtimeType.toString().contains('Dio')) {
+        try {
+          final response = (e as dynamic).response;
+          if (response != null && response.data != null) {
+            // gRPC-Gateway suele devolver { "message": "...", "code": ... }
+            if (response.data is Map && response.data['message'] != null) {
+              userFriendlyError = response.data['message'];
+            }
+          }
+        } catch (_) {}
+      }
+
       setState(() {
         _messages.removeWhere((m) => m.type == _ChatBubbleType.loading);
         _messages.add(_ChatMessage(
           type: _ChatBubbleType.error,
-          text: "Error al analizar: $e",
+          text: "⚠️ $userFriendlyError",
         ));
         _isAnalyzing = false;
       });

@@ -25,6 +25,7 @@ message AnalyzeWineLabelResponse {
   string raw_ocr_text = 1;
   ImageClassification classification = 2;
   StructuredWineData wine_data = 3;
+  string sommelier_note = 4;
 }
 
 message ImageClassification {
@@ -37,4 +38,6 @@ message StructuredWineData {
   string cepa_variedad = 2;
   int32 vintage_year = 3;
   string volume_content = 4;
+  string sku = 5;
+  string warehouse = 6;
 }

@@ -2,6 +2,7 @@ package vision
 
 import (
 	"context"
+	"os"
 
 	pb "github.com/vinosPASI/vinos/backend/api/proto/v1/visionpb"
 	"github.com/vinosPASI/vinos/backend/internal/storage"
@@ -14,9 +15,16 @@ type Handler struct {
 }
 
 func NewHandler(minioAdapter *storage.MinIOAdapter) *Handler {
-	lmEndpoint := "http://host.docker.internal:1234/v1/chat/completions"
+	filterURL := os.Getenv("VISION_FILTER_URL")
+	if filterURL == "" {
+		filterURL = "http://localhost:8000"
+	}
+	mlURL := os.Getenv("ML_MODELS_URL")
+	if mlURL == "" {
+		mlURL = "http://localhost:1234"
+	}
 	return &Handler{
-		svc: NewService(minioAdapter, lmEndpoint),
+		svc: NewService(minioAdapter, mlURL, filterURL),
 	}
 }
 func (h *Handler) AnalyzeWineLabel(ctx context.Context, req *pb.AnalyzeWineLabelRequest) (*pb.AnalyzeWineLabelResponse, error) {
