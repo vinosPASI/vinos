@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  # ── Backend Go (gRPC + HTTP) ──
+  # ── Backend Node.js (Express) ──
   backend:
     build:
       context: ../../
-      dockerfile: build/package/Dockerfile.backend
+      dockerfile: Dockerfile
     container_name: smartwinery_backend
     environment:
       POCKETBASE_URL: http://pocketbase:8090
@@ -14,16 +14,17 @@ services:
       MINIO_ENDPOINT: minio:9000
       MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-admin_winery}
       MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-SmartPassword123!}
-      GRPC_PORT: ":50051"
-      HTTP_PORT: ":8081"
-      LOG_LEVEL: ${LOG_LEVEL:-info}
+      PORT: "8080"
+      ML_MODELS_URL: "http://host.docker.internal:11434"
+      VISION_LLM_MODEL: "qwen2.5vl:3b"
     ports:
-      - "50051:50051"
-      - "8081:8081"
+      - "8080:8080"
     depends_on:
       - pocketbase
       - minio
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   # ── PocketBase (Auth & DB) ──
   pocketbase:
@@ -52,46 +53,15 @@ services:
       - minio_data:/data
     restart: unless-stopped
 
-  # ── Elasticsearch ──
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.10.2
-    container_name: smartwinery_elastic
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-    ports:
-      - "9200:9200"
-    volumes:
-      - es_data:/usr/share/elasticsearch/data
-    restart: unless-stopped
-
-  # ── Envoy (API Gateway / gRPC-JSON Transcoder) ──
-  envoy:
-    build:
-      context: ../../build/envoy
-      dockerfile: Dockerfile.envoy
-    container_name: smartwinery_envoy
-    ports:
-      - "8080:8080"
-      - "9901:9901"
-    volumes:
-      - ../../build/envoy/envoy.yaml:/etc/envoy/envoy.yaml:ro
-      - ../../build/envoy/api_descriptor.pb:/etc/envoy/api_descriptor.pb:ro
-    depends_on:
-      - backend
-    restart: unless-stopped
-
   # ── Cloudflare Tunnel (expone winery-api.stuko.dev) ──
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: smartwinery_tunnel
     command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
-      - envoy
+      - backend
     restart: unless-stopped
 
 volumes:
   pb_data:
   minio_data:
-  es_data:

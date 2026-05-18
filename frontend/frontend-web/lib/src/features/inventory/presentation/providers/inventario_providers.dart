@@ -80,3 +80,8 @@ final inventoryListProvider = FutureProvider.autoDispose<List<InventoryItem>>((r
   final repo = ref.watch(inventoryRepositoryProvider);
   return await repo.getInventoryItems();
 });
+
+final inventoryItemDetailProvider = FutureProvider.autoDispose.family<Map<String, dynamic>, String>((ref, id) async {
+  final repo = ref.watch(inventoryRepositoryProvider);
+  return await repo.getInventoryItemDetail(id);
+});

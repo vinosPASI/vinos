@@ -13,10 +13,10 @@ class StructuredWineData {
 
   factory StructuredWineData.fromJson(Map<String, dynamic> json) {
     return StructuredWineData(
-      brand: json['brand'] ?? 'Desconocida',
-      cepaVariedad: json['cepa_variedad'] ?? 'Desconocida',
-      vintageYear: json['vintage_year'] ?? 0,
-      volumeContent: json['volume_content'] ?? '750ml',
+      brand: json['brand'] ?? '',
+      cepaVariedad: json['cepa_variedad'] ?? json['cepaVariedad'] ?? '',
+      vintageYear: (json['vintage_year'] ?? json['vintageYear'] ?? 0) as int,
+      volumeContent: json['volume_content'] ?? json['volumeContent'] ?? '',
     );
   }
 }
@@ -42,18 +42,21 @@ class AnalyzeWineLabelResponse {
   final String rawOcrText;
   final WineClassification classification;
   final StructuredWineData wineData;
+  final String sommelierNote;
 
   AnalyzeWineLabelResponse({
     required this.rawOcrText,
     required this.classification,
     required this.wineData,
+    this.sommelierNote = '',
   });
 
   factory AnalyzeWineLabelResponse.fromJson(Map<String, dynamic> json) {
     return AnalyzeWineLabelResponse(
-      rawOcrText: json['raw_ocr_text'] ?? '',
+      rawOcrText: json['raw_ocr_text'] ?? json['rawOcrText'] ?? '',
       classification: WineClassification.fromJson(json['classification'] ?? {}),
-      wineData: StructuredWineData.fromJson(json['wine_data'] ?? {}),
+      wineData: StructuredWineData.fromJson(json['wine_data'] ?? json['wineData'] ?? {}),
+      sommelierNote: json['sommelier_note'] ?? json['sommelierNote'] ?? '',
     );
   }
 }

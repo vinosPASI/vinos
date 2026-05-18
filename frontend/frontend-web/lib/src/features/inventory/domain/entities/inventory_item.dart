@@ -6,6 +6,10 @@ class InventoryItem {
   final String type;
   final int quantity;
   final String unit;
+  final String sku;
+  final int realStock;
+  final int netStock;
+  final String warehouse;
   final String createdAt;
   final String updatedAt;
 
@@ -15,6 +19,10 @@ class InventoryItem {
     required this.type,
     required this.quantity,
     required this.unit,
+    required this.sku,
+    required this.realStock,
+    required this.netStock,
+    required this.warehouse,
     this.createdAt = '',
     this.updatedAt = '',
   });
@@ -26,6 +34,10 @@ class InventoryItem {
       type: json['type']?.toString() ?? '',
       quantity: (json['quantity'] as num?)?.toInt() ?? 0,
       unit: json['unit']?.toString() ?? '',
+      sku: json['sku']?.toString() ?? '',
+      realStock: (json['real_stock'] as num?)?.toInt() ?? 0,
+      netStock: (json['net_stock'] as num?)?.toInt() ?? 0,
+      warehouse: json['warehouse']?.toString() ?? '',
       createdAt: json['created_at']?.toString() ?? '',
       updatedAt: json['updated_at']?.toString() ?? '',
     );
@@ -49,3 +61,4 @@ class InventoryItem {
     }
   }
 }
+

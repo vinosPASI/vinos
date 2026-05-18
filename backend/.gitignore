@@ -1,14 +1,6 @@
-# Binaries
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-/bin/
-
-# Go
-vendor/
-*.test
+# Node.js
+node_modules/
+npm-debug.log*
 
 # Environment
 .env

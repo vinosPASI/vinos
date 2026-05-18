@@ -58,14 +58,20 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
   }
 
   Future<void> _takePhoto() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.camera,
+      requestFullMetadata: false,
+    );
     if (pickedFile != null) {
       await _processImage(pickedFile);
     }
   }
 
   Future<void> _pickFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+      requestFullMetadata: false,
+    );
     if (pickedFile != null) {
       await _processImage(pickedFile);
     }
@@ -87,24 +93,43 @@ class _CameraScreenState extends ConsumerState<CameraScreen> {
       final result = await repo.analyzeLabel(pickedFile.name, bytes);
 
       setState(() {
-        // Quitar el indicador de carga
         _messages.removeWhere((m) => m.type == _ChatBubbleType.loading);
         _messages.add(_ChatMessage(
           type: _ChatBubbleType.bot,
           text: "💡 ¡Análisis completado!\n\n"
               "🏷️ Marca: ${result.wineData.brand}\n"
-              "🍇 Cepa: ${result.wineData.cepaVariedad}\n"
-              "📅 Año: ${result.wineData.vintageYear}\n"
+              "🍇 Variedad: ${result.wineData.cepaVariedad}\n"
+              "📅 Año: ${result.wineData.vintageYear > 0 ? result.wineData.vintageYear : 'N/A'}\n"
               "📏 Volumen: ${result.wineData.volumeContent}",
         ));
+        
+        if (result.sommelierNote.isNotEmpty) {
+          _messages.add(_ChatMessage(
+            type: _ChatBubbleType.bot,
+            text: "🍷 Recomendación del Sommelier:\n\n${result.sommelierNote}",
+          ));
+        }
+
         _isAnalyzing = false;
       });
     } catch (e) {
+      String userFriendlyError = e.toString();
+      if (e is dynamic && e.runtimeType.toString().contains('Dio')) {
+        try {
+          final response = (e as dynamic).response;
+          if (response != null && response.data != null) {
+            if (response.data is Map && response.data['message'] != null) {
+              userFriendlyError = response.data['message'];
+            }
+          }
+        } catch (_) {}
+      }
+
       setState(() {
         _messages.removeWhere((m) => m.type == _ChatBubbleType.loading);
         _messages.add(_ChatMessage(
           type: _ChatBubbleType.error,
-          text: "Error al analizar: $e",
+          text: "⚠️ $userFriendlyError",
         ));
         _isAnalyzing = false;
       });
