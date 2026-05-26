@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   # ── Backend Node.js (Express) ──
-  envoy:
+  backend:
     build:
       context: ../../
       dockerfile: Dockerfile
@@ -59,7 +59,7 @@ services:
     container_name: smartwinery_tunnel
     command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
-      - envoy
+      - backend
     restart: unless-stopped
 
 volumes:
