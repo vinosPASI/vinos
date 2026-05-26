@@ -2,6 +2,8 @@ const Minio = require('minio');
 
 class MinioService {
   constructor(endpoint, accessKey, secretKey, useSSL = false) {
+    this.endpoint = endpoint;
+    this.useSSL = useSSL;
     this.client = new Minio.Client({
       endPoint: endpoint.split(':')[0],
       port: parseInt(endpoint.split(':')[1] || '9000', 10),
@@ -23,7 +25,8 @@ class MinioService {
       'Content-Type': contentType,
     });
 
-    const url = `${this.client.params.host}/${bucket}/${objectName}`;
+    const protocol = this.useSSL ? 'https' : 'http';
+    const url = `${protocol}://${this.endpoint}/${bucket}/${objectName}`;
     return url;
   }
 

@@ -62,18 +62,14 @@ class MLClient {
       confidence_level: 0.95,
     };
 
-    let sommelierNote = '';
-    if (labelData.brand && labelData.brand !== 'N/A') {
-      sommelierNote = await this.getSommelierRecommendation(labelData.brand, labelData.cepa_variedad);
-    }
-
     const rawText = `${labelData.brand} ${labelData.cepa_variedad} ${labelData.volume_content}`.trim();
 
     return {
       raw_ocr_text: rawText,
       classification,
       wine_data: labelData,
-      sommelier_note: sommelierNote,
+      sommelier_note: labelData.sommelier_note || '',
+      volumen_alcoholico: labelData.volumen_alcoholico || 'N/A',
     };
   }
 
@@ -83,7 +79,9 @@ class MLClient {
   "brand": "Nombre de la bodega/marca",
   "cepa_variedad": "Variedad de uva o tipo de vino",
   "vintage_year": 2020,
-  "volume_content": "750ml"
+  "volume_content": "750ml",
+  "sommelier_note": "Recomendación muy breve de maridaje o la ocasión ideal para este vino, en español, concisa y directa.",
+  "volumen_alcoholico": "Porcentaje de alcohol (ej: 13.5%)"
 }
 Responde SOLO con el JSON. Si no puedes leer algo, usa "N/A".`;
 
@@ -91,31 +89,56 @@ Responde SOLO con el JSON. Si no puedes leer algo, usa "N/A".`;
       base64Image = base64Image.split(',')[1];
     }
 
+    try {
+      const { Jimp } = require('jimp');
+      const buffer = Buffer.from(base64Image, 'base64');
+      const image = await Jimp.read(buffer);
+
+      const maxDim = 1000;
+      if (image.width > maxDim || image.height > maxDim) {
+        let w = image.width;
+        let h = image.height;
+        if (w > h) {
+          h = Math.round((h * maxDim) / w);
+          w = maxDim;
+        } else {
+          w = Math.round((w * maxDim) / h);
+          h = maxDim;
+        }
+        image.resize({ w, h });
+        const resizedBuffer = await image.getBuffer('image/jpeg');
+        base64Image = resizedBuffer.toString('base64');
+        console.log(`[ML] Imagen de entrada redimensionada de ${image.width}x${image.height} a ${w}x${h} para evitar OOM en Ollama`);
+      }
+    } catch (jimpErr) {
+      console.warn('[ML] Advertencia: No se pudo redimensionar la imagen con Jimp (usando original):', jimpErr.message);
+    }
+
     const payload = {
       model: this.llmModel,
       messages: [
         {
           role: 'user',
-          content: [
-            { type: 'text', text: prompt },
-            {
-              type: 'image_url',
-              image_url: { url: `data:image/jpeg;base64,${base64Image}` },
-            },
-          ],
+          content: prompt,
+          images: [base64Image],
         },
       ],
       stream: false,
-      temperature: 0.0,
+      keep_alive: -1,
+      options: {
+        temperature: 0.0,
+        num_ctx: 1536,
+        num_batch: 128,
+      },
     };
 
-    const response = await this._makeRequest(`${this.endpoint}/v1/chat/completions`, payload);
+    const response = await this._makeRequest(`${this.endpoint}/api/chat`, payload);
 
-    if (!response.choices || response.choices.length === 0) {
-      throw new Error('el modelo no devolvió opciones');
+    if (!response.message || !response.message.content) {
+      throw new Error('el modelo no devolvió contenido');
     }
 
-    const content = response.choices[0].message.content;
+    const content = response.message.content;
 
     try {
       return extractJSON(content);
@@ -125,33 +148,33 @@ Responde SOLO con el JSON. Si no puedes leer algo, usa "N/A".`;
     }
   }
 
-  async getSommelierRecommendation(brand, variety) {
-    const systemPrompt = 'Eres un sommelier profesional. Responde en español con una recomendación muy breve de maridaje o la ocasión ideal para este vino. Sé muy conciso y directo.';
-    const userPrompt = `Tengo una botella de ${brand} ${variety}. ¿Para qué me la recomiendas?`;
 
-    const payload = {
-      model: this.llmModel,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt },
-      ],
-      temperature: 0.7,
-      max_tokens: 150,
-    };
 
+  async preloadModel() {
+    console.log('[ML] Pre-cargando modelo qwen2.5vl:3b en segundo plano...');
     try {
-      const response = await this._makeRequest(`${this.endpoint}/v1/chat/completions`, payload);
-
-      if (response.choices && response.choices.length > 0) {
-        return response.choices[0].message.content.trim();
-      }
+      const payload = {
+        model: this.llmModel,
+        messages: [],
+        keep_alive: -1,
+        options: {
+          num_ctx: 1536,
+          num_batch: 128,
+        },
+      };
+      this._makeRequest(`${this.endpoint}/api/chat`, payload)
+        .then(() => {
+          console.log('[ML] Modelo qwen2.5vl:3b pre-cargado exitosamente en memoria.');
+        })
+        .catch((err) => {
+          console.error('[ML] Error cargando modelo en segundo plano:', err.message);
+        });
     } catch (err) {
-      console.error('[ML] Error obteniendo recomendación de sommelier:', err.message);
+      console.error('[ML] Error al iniciar la pre-carga:', err.message);
     }
-
-    return '';
   }
 }
+
 
 function extractJSON(content) {
   content = content.trim();
@@ -195,6 +218,8 @@ function extractJSON(content) {
     volume_content: getString(raw, 'volume_content'),
     sku: getString(raw, 'sku'),
     warehouse: getString(raw, 'warehouse'),
+    sommelier_note: getString(raw, 'sommelier_note'),
+    volumen_alcoholico: getString(raw, 'volumen_alcoholico'),
   };
 }
 
@@ -230,6 +255,8 @@ function fallbackResult() {
     volume_content: 'N/A',
     sku: 'N/A',
     warehouse: 'N/A',
+    sommelier_note: '',
+    volumen_alcoholico: 'N/A',
   };
 }
 

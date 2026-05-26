@@ -61,6 +61,7 @@ async function main() {
   app.use('/v1/storage', storageRoutes(minioService));
 
   app.get('/healthz', (req, res) => {
+    console.log('[Server] /healthz endpoint was hit!');
     res.status(200).send('OK');
   });
 
