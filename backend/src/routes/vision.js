@@ -10,10 +10,13 @@ function visionRoutes(pbClient, minioService) {
     process.env.ML_MODELS_URL || 'http://localhost:11434',
     process.env.VISION_LLM_MODEL || 'qwen2.5vl:3b'
   );
+  mlClient.preloadModel();
+
 
   router.post('/analyze', async (req, res, next) => {
     try {
       const { image_reference } = req.body;
+      console.log('[Vision] Solicitud /analyze recibida para:', image_reference);
 
       if (!image_reference) {
         return res.status(400).json({ error: 'image_reference es requerido' });
@@ -28,18 +31,25 @@ function visionRoutes(pbClient, minioService) {
         objectName = parts.slice(1).join('/');
       }
 
+      console.log(`[Vision] Descargando desde MinIO bucket: ${bucket}, object: ${objectName}...`);
       const imageBytes = await minioService.downloadFile(bucket, objectName);
+      console.log('[Vision] Descarga de MinIO completada. Tamaño:', imageBytes.length, 'bytes');
+
       const base64Image = imageBytes.toString('base64');
 
+      console.log('[Vision] Enviando a MLClient para analizar etiqueta...');
       const result = await mlClient.analyzeLabel(base64Image);
+      console.log('[Vision] Análisis de etiqueta completado con éxito.');
 
       res.json({
         raw_ocr_text: result.raw_ocr_text,
         classification: result.classification,
         wine_data: result.wine_data,
         sommelier_note: result.sommelier_note,
+        volumen_alcoholico: result.volumen_alcoholico,
       });
     } catch (err) {
+      console.error('[Vision] Error procesando /analyze:', err.message);
       next(err);
     }
   });
@@ -51,6 +61,7 @@ function visionRoutes(pbClient, minioService) {
       classification: mockResult.classification,
       wine_data: mockResult.wine_data,
       sommelier_note: mockResult.sommelier_note,
+      volumen_alcoholico: 'N/A',
     });
   });
 
